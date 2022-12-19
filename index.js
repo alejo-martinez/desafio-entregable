@@ -55,6 +55,6 @@ productManager.addProduct("producto prueba", "Este es un producto prueba", 200, 
 
 productManager.getProduct()
 
-productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc13", 25)
+productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25)
 
 productManager.getProductById(5)
