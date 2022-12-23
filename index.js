@@ -1,4 +1,4 @@
-
+const fs = require('fs')
 // CLASE PRODUCTO Y SU CONSTRUCTOR
 class Product {
         constructor(title, description, price, thumbnail, code, stock) {
@@ -11,31 +11,37 @@ class Product {
             }
         }
 
+        let guardar
         // CONTADOR QUE MODIFICA EL ID
             let id = 0;
             const modificarId = () => {
             return id ++;
         }
 
+       
 
         // CLASE PRODUCTMANAGER CON SUS METODOS
         class ProductManager {
-    getProduct () {
-       console.log(arrayProduct);
-    }
-    addProduct(title, description, price, thumbnail, code, stock) {
-        let duplicado = arrayProduct.filter(prod => prod.code === code)
-        if (duplicado.length !== 0) {
-            console.log("El codigo ingresado ya está en uso");
-        } else {
-            Product.prototype.id ;
-            let producto = new Product(title, description, price, thumbnail, code, stock)
-            producto.id = modificarId() ;
-            arrayProduct.push(producto)
-            return producto
-        }
-    }
+            constructor(path) {
+                this.path = path
+                this.iniciar()
+            }
+            
+            iniciar = async() => {
+                await fs.promises.writeFile(this.path, JSON.stringify(arrayProduct))
+            }
 
+    getProduct = async ()=> {
+            guardar = await fs.promises.readFile(this.path, 'utf-8')
+            console.log(JSON.parse(guardar));
+    }
+    addProduct = async (title, description, price, thumbnail, code, stock) => {
+        Product.prototype.id ;
+        let producto = new Product(title, description, price, thumbnail, code, stock)
+        producto.id = modificarId()
+        arrayProduct.push(producto)
+        await fs.promises.writeFile(this.path, JSON.stringify(arrayProduct))
+    }
     getProductById (id) {
        let productoBuscado = arrayProduct.filter((prod) => prod.id === id)
              productoBuscado.length === 0 ? console.log("El id del producto que buscaste no existe") : console.log(productoBuscado);           
@@ -60,8 +66,9 @@ class Product {
 // ARRAY DONDE SE MUESTRAN LOS PRODUCTOS CREADOS
 let arrayProduct = []
 
+
 // Instancia de la clase ProductManager
-let productManager = new ProductManager
+let productManager = new ProductManager('./productos.json')
 
 
 productManager.getProduct()
@@ -69,13 +76,3 @@ productManager.getProduct()
 productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25)
 
 productManager.getProduct()
-
-productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25)
-
-productManager.getProductById(5)
-
-productManager.updateProduct(0, "description", "modificando la descripcion")
-
-productManager.getProduct()
-
-productManager.deleteProduct(5)
