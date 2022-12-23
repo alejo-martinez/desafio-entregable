@@ -11,7 +11,7 @@ class Product {
             }
         }
 
-        let guardar
+        let guardar = []
         // CONTADOR QUE MODIFICA EL ID
             let id = 0;
             const modificarId = () => {
@@ -24,23 +24,28 @@ class Product {
         class ProductManager {
             constructor(path) {
                 this.path = path
-                this.iniciar()
+                this.array = []
             }
             
             iniciar = async() => {
-                await fs.promises.writeFile(this.path, JSON.stringify(arrayProduct))
+                await fs.promises.writeFile(this.path, JSON.stringify(this.array), err => {
+                    if (!err) {
+                        console.log('archivo creado');
+                    }
+                })
             }
 
     getProduct = async ()=> {
-            guardar = await fs.promises.readFile(this.path, 'utf-8')
+            guardar = await fs.promises.readFile(this.path, 'utf8')
             console.log(JSON.parse(guardar));
+
     }
     addProduct = async (title, description, price, thumbnail, code, stock) => {
         Product.prototype.id ;
         let producto = new Product(title, description, price, thumbnail, code, stock)
         producto.id = modificarId()
-        arrayProduct.push(producto)
-        await fs.promises.writeFile(this.path, JSON.stringify(arrayProduct))
+        this.array = [producto]
+        await fs.promises.writeFile(this.path, JSON.stringify(this.array))
     }
     getProductById (id) {
        let productoBuscado = arrayProduct.filter((prod) => prod.id === id)
@@ -69,10 +74,10 @@ let arrayProduct = []
 
 // Instancia de la clase ProductManager
 let productManager = new ProductManager('./productos.json')
+// productManager.iniciar()
 
+// productManager.getProduct()
 
-productManager.getProduct()
-
-productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25)
+// productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25)
 
 productManager.getProduct()
