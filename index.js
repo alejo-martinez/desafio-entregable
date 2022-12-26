@@ -11,7 +11,7 @@ class Product {
             }
         }
 
-        let guardar = []
+        let guardar
         // CONTADOR QUE MODIFICA EL ID
             let id = 0;
             const modificarId = () => {
@@ -21,63 +21,109 @@ class Product {
        
 
         // CLASE PRODUCTMANAGER CON SUS METODOS
-        class ProductManager {
-            constructor(path) {
-                this.path = path
-                this.array = []
-            }
-            
-            iniciar = async() => {
-                await fs.promises.writeFile(this.path, JSON.stringify(this.array), err => {
-                    if (!err) {
-                        console.log('archivo creado');
-                    }
-                })
-            }
+class ProductManager {
 
-    getProduct = async ()=> {
-            guardar = await fs.promises.readFile(this.path, 'utf8')
-            console.log(JSON.parse(guardar));
-
+    constructor(path) {
+        this.path = path
+        this.array = []
     }
-    addProduct = async (title, description, price, thumbnail, code, stock) => {
+    
+    async iniciar() {
+        try {
+            await fs.promises.writeFile(this.path, JSON.stringify(this.array), (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            })
+            
+        } catch (error) {
+            if (error) {
+                console.log('error al escribir el archivo al iniciar');
+            }
+        }
+    }
+    async getProduct () {
+        try {
+            guardar = await fs.promises.readFile(this.path, 'utf-8')
+            console.log(JSON.parse(guardar));
+            
+        } catch (error) {
+            if (error) {
+                console.log('error al leer el archivo');
+            }
+        }
+    }
+
+    async addProduct (title, description, price, thumbnail, code, stock) {
         Product.prototype.id ;
         let producto = new Product(title, description, price, thumbnail, code, stock)
         producto.id = modificarId()
-        this.array = [producto]
-        await fs.promises.writeFile(this.path, JSON.stringify(this.array))
+        arrayProduct.push(producto)
+        try {
+        await fs.promises.writeFile(this.path, JSON.stringify(arrayProduct, null, 2));
+    } catch (error) {
+        if (error) {
+            console.log('error al añadir el producto');
+        }
     }
-    getProductById (id) {
-       let productoBuscado = arrayProduct.filter((prod) => prod.id === id)
-             productoBuscado.length === 0 ? console.log("El id del producto que buscaste no existe") : console.log(productoBuscado);           
+    }
+    async getProductById (id) {
+        try {
+            let archivoGuardado = JSON.parse(await fs.promises.readFile(this.path, 'utf-8'))
+            let productoEncontrado =  archivoGuardado.find(prod => prod.id === id)
+            productoEncontrado? console.log(productoEncontrado):console.log('el producto buscado por id no existe');     
+        } catch (error) {
+            if (error) {
+                console.log(error);
+            }
+        }
     }
 
-    updateProduct (id, campo, valor) {
-        let seleccionado = arrayProduct.find(prod => prod.id === id)
-        seleccionado[campo] = valor
+    async updateProduct (id, campo, valor) {
+        let product = arrayProduct.find(prod => prod.id === id)
+        product[campo] = valor;
+        arrayProduct.filter(prod => prod.id !== id)
+        arrayProduct.push(product)
+        try {
+            fs.promises.writeFile(this.path, JSON.stringify(arrayProduct))
+        } catch (error) {
+            if (error) {
+                console.log(error);
+            }
+        }
+        
     }
 
-    deleteProduct (id) {
-        if (arrayProduct.find(prod => prod.id === id)) {
-            arrayProduct = arrayProduct.filter(prod => prod.id !== id)
-            console.log(arrayProduct);
+    async deleteProduct (id) {
+        let encontrado = arrayProduct.find(prod => prod.id === id)
+        if (encontrado) {
+            let borrarProd = arrayProduct.filter(prod => prod.id !== id)
+            try {
+                await fs.promises.writeFile(this.path, JSON.stringify(borrarProd))
+            } catch (error) {
+                if (error) {
+                    console.log(error);
+                }
+        }   
         } else {
-            console.log("no existe el producto");
+            console.log("el producto ya fue borrado o no existe");
         }
     }
 }
 
+async function ejecutarMetodos() {
+    const productManager = new ProductManager('./productos.json')
+    await productManager.iniciar()
+    await productManager.getProduct()
+    
+    await productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25)
+    await productManager.getProduct()
+    await productManager.getProductById(2)
+    await productManager.updateProduct(0, 'description', 'cambiando la descripcion del producto')
+    await productManager.deleteProduct(3)
+}
 
 // ARRAY DONDE SE MUESTRAN LOS PRODUCTOS CREADOS
 let arrayProduct = []
 
-
-// Instancia de la clase ProductManager
-let productManager = new ProductManager('./productos.json')
-// productManager.iniciar()
-
-// productManager.getProduct()
-
-// productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25)
-
-productManager.getProduct()
+ejecutarMetodos()
