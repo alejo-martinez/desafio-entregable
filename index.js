@@ -82,10 +82,10 @@ class ProductManager {
     async updateProduct (id, campo, valor) {
         let product = arrayProduct.find(prod => prod.id === id)
         product[campo] = valor;
-        arrayProduct.filter(prod => prod.id !== id)
-        arrayProduct.push(product)
+        let nuevoArray = arrayProduct.filter(prod => prod.id !== id)
+        nuevoArray.push(product)
         try {
-            fs.promises.writeFile(this.path, JSON.stringify(arrayProduct))
+            fs.promises.writeFile(this.path, JSON.stringify(nuevoArray))
         } catch (error) {
             if (error) {
                 console.log(error);
@@ -95,9 +95,11 @@ class ProductManager {
     }
 
     async deleteProduct (id) {
-        let encontrado = arrayProduct.find(prod => prod.id === id)
+        let arrayLeido = await fs.promises.readFile(this.path, 'utf-8')
+        arrayLeido = JSON.parse(arrayLeido)
+        let encontrado = arrayLeido.find(prod => prod.id === id)
         if (encontrado) {
-            let borrarProd = arrayProduct.filter(prod => prod.id !== id)
+            let borrarProd = arrayLeido.filter(prod => prod.id !== id)
             try {
                 await fs.promises.writeFile(this.path, JSON.stringify(borrarProd))
             } catch (error) {
