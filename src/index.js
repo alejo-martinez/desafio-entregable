@@ -1,4 +1,5 @@
-const fs = require('fs')
+import fs from 'fs'
+
 // CLASE PRODUCTO Y SU CONSTRUCTOR
 class Product {
         constructor(title, description, price, thumbnail, code, stock) {
@@ -21,35 +22,37 @@ class Product {
        
 
         // CLASE PRODUCTMANAGER CON SUS METODOS
-class ProductManager {
+export class ProductManager {
 
     constructor(path) {
         this.path = path
         this.array = []
     }
     
-    async iniciar() {
-        try {
-            await fs.promises.writeFile(this.path, JSON.stringify(this.array), (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            })
+    // async iniciar() {
+    //     try {
+    //         await fs.promises.writeFile(this.path, JSON.stringify(this.array), (err) => {
+    //             if (err) {
+    //                 console.log(err);
+    //             }
+    //         })
             
-        } catch (error) {
-            if (error) {
-                console.log('error al escribir el archivo al iniciar');
-            }
-        }
-    }
+    //     } catch (error) {
+    //         if (error) {
+    //             console.log('error al escribir el archivo al iniciar');
+    //         }
+    //     }
+    // }
     async getProduct () {
         try {
-            guardar = await fs.promises.readFile(this.path, 'utf-8')
-            console.log(JSON.parse(guardar));
+            return JSON.parse(await fs.promises.readFile(this.path, 'utf-8'))
+            // guardar = JSON.parse(guardar)
+            // console.log(guardar);
             
         } catch (error) {
             if (error) {
                 console.log('error al leer el archivo');
+                
             }
         }
     }
@@ -113,19 +116,27 @@ class ProductManager {
     }
 }
 
-async function ejecutarMetodos() {
-    const productManager = new ProductManager('./productos.json')
-    await productManager.iniciar()
-    await productManager.getProduct()
-    
-    await productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "sin imagen", "abc123", 25)
-    await productManager.getProduct()
-    await productManager.getProductById(2)
-    await productManager.updateProduct(0, 'description', 'cambiando la descripcion del producto')
-    await productManager.deleteProduct(3)
-}
+// const productManager = new ProductManager('../productos.json')
+// async function ejecutarMetodos() {
+//     await productManager.iniciar()
+    // await productManager.getProduct()
+//     await productManager.addProduct("Arroz", "Arroz integral TRIMACER", 200, "sin imagen", "abc123", 10)
+//     await productManager.getProduct()
+//     await productManager.addProduct("Batatas", "Verduras de primera calidad", 150, "sin imagen", "abc123", 50)
+//     await productManager.addProduct("Cereales", "Cereales en oferta", 350, "sin imagen", "abc1234", 24)
+//     await productManager.addProduct("Pan", "Pan recien horneado", 125, "sin imagen", "abc143", 12)
+//     await productManager.addProduct("Leche", "Leche descremada", 110, "sin imagen", "abc223", 115)
+//     await productManager.addProduct("Yogurt", "Yogurt entero", 300, "sin imagen", "abc1235", 75)
+//     await productManager.addProduct("Sprite", "Bebida sprite 2L", 500, "sin imagen", "abc1236", 12)
+//     await productManager.addProduct("Agua saborizada", "Agua saborizada sin gas LEVITE", 115, "sin imagen", "abc1237", 17)
+//     await productManager.addProduct("Queso cremoso", "Queso cremoso light LA PAULINA", 137, "sin imagen", "abc523", 65)
+//     await productManager.addProduct("Tomate", "Tomates de primera calidad", 210, "sin imagen", "abc183", 82)
+//     await productManager.getProduct()
+// }
 
 // ARRAY DONDE SE MUESTRAN LOS PRODUCTOS CREADOS
 let arrayProduct = []
 
-ejecutarMetodos()
+// await ejecutarMetodos()
+
+// module.exports = ProductManager

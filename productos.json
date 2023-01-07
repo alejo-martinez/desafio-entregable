@@ -1,0 +1,92 @@
+[
+  {
+    "title": "Arroz",
+    "description": "Arroz integral TRIMACER",
+    "price": 200,
+    "thumbnail": "sin imagen",
+    "code": "abc123",
+    "stock": 10,
+    "id": 0
+  },
+  {
+    "title": "Batatas",
+    "description": "Verduras de primera calidad",
+    "price": 150,
+    "thumbnail": "sin imagen",
+    "code": "abc123",
+    "stock": 50,
+    "id": 1
+  },
+  {
+    "title": "Cereales",
+    "description": "Cereales en oferta",
+    "price": 350,
+    "thumbnail": "sin imagen",
+    "code": "abc1234",
+    "stock": 24,
+    "id": 2
+  },
+  {
+    "title": "Pan",
+    "description": "Pan recien horneado",
+    "price": 125,
+    "thumbnail": "sin imagen",
+    "code": "abc143",
+    "stock": 12,
+    "id": 3
+  },
+  {
+    "title": "Leche",
+    "description": "Leche descremada",
+    "price": 110,
+    "thumbnail": "sin imagen",
+    "code": "abc223",
+    "stock": 115,
+    "id": 4
+  },
+  {
+    "title": "Yogurt",
+    "description": "Yogurt entero",
+    "price": 300,
+    "thumbnail": "sin imagen",
+    "code": "abc1235",
+    "stock": 75,
+    "id": 5
+  },
+  {
+    "title": "Sprite",
+    "description": "Bebida sprite 2L",
+    "price": 500,
+    "thumbnail": "sin imagen",
+    "code": "abc1236",
+    "stock": 12,
+    "id": 6
+  },
+  {
+    "title": "Agua saborizada",
+    "description": "Agua saborizada sin gas LEVITE",
+    "price": 115,
+    "thumbnail": "sin imagen",
+    "code": "abc1237",
+    "stock": 17,
+    "id": 7
+  },
+  {
+    "title": "Queso cremoso",
+    "description": "Queso cremoso light LA PAULINA",
+    "price": 137,
+    "thumbnail": "sin imagen",
+    "code": "abc523",
+    "stock": 65,
+    "id": 8
+  },
+  {
+    "title": "Tomate",
+    "description": "Tomates de primera calidad",
+    "price": 210,
+    "thumbnail": "sin imagen",
+    "code": "abc183",
+    "stock": 82,
+    "id": 9
+  }
+]
