@@ -8,7 +8,6 @@ const pm = new ProductManager('../productos.json')
 router.get('/', async (req, res)=>{
     let file = await pm.getProduct()
     let limit = req.query.limit
-    console.log(file);
     if (limit) {
         res.send(file.slice(0, limit))
     } else{
