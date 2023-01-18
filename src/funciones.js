@@ -6,22 +6,31 @@ let cm = new CartManager('../cart.json')
 
 
 
-const productosActuales = async() => {
-    const prodActuales = []
+const cartOcupped = async() => {
     const arrayCarts = await cm.getCarts()
-    const arrayProds = await pm.getProduct()
-    
-    arrayCarts.forEach(cart => {
-        console.log(cart.products.find(prod => prod.id == 1));
-    })
-    
-
-// NO PUEDO ACCEDER A CART.PRODUCTS Y BUSCAR EL ID DEL PROD
-    
-
+    for (let i= 0; i < arrayCarts.length; i++) {
+        const element = arrayCarts[i].products
+        if (element.length !== 0) {
+           return element
+        }
+    }
 }
-await productosActuales()
 
-// console.log();
+const productosActuales = async () =>{
+    let cartConProd = await cartOcupped()
+    const prodActuales = []
+    const arrayProds = await pm.getProduct()
+    for (let i = 0; i < arrayProds.length; i++) {
+        const element = arrayProds[i];
+        // const cantidad = cartConProd[i].quantity
+        if (element.id === cartConProd[i].id) {
+            prodActuales.push(element)
+            return prodActuales
+        }
+    }
+}
 
-export default productosActuales
+console.log(await productosActuales());
+
+
+export default cartOcupped
