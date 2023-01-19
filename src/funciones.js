@@ -1,8 +1,10 @@
-import fs from 'fs'
 import { ProductManager, CartManager } from './index.js'
 
 let pm = new ProductManager('../productos.json')
 let cm = new CartManager('../cart.json')
+
+
+
 
 
 
@@ -20,17 +22,23 @@ const productosActuales = async () =>{
     let cartConProd = await cartOcupped()
     const prodActuales = []
     const arrayProds = await pm.getProduct()
-    for (let i = 0; i < arrayProds.length; i++) {
-        const element = arrayProds[i];
-        // const cantidad = cartConProd[i].quantity
-        if (element.id === cartConProd[i].id) {
-            prodActuales.push(element)
-            return prodActuales
+    
+    cartConProd.forEach(cart =>{
+        let idCart = cart.id;
+        let cantidad = cart.quantity;
+
+        
+        let producto = arrayProds.find(prod => prod.id === idCart)
+        if (producto) {
+            prodActuales.push({...producto, quantity: cantidad})          
+            
         }
-    }
+        
+    })
+    return prodActuales;
 }
 
-console.log(await productosActuales());
+// console.log(await productosActuales());
 
 
-export default cartOcupped
+export default productosActuales

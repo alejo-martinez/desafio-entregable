@@ -4,7 +4,7 @@ import cartRouter from './routes/cart.router.js'
 import {__dirname} from './utils.js'
 import handlebars from 'express-handlebars'
 import path from 'path'
-import productosActuales from './funciones.js'
+
 
 
 const app = express()
@@ -27,10 +27,7 @@ app.listen(3005, ()=>{
     console.log('server iniciado');
 })
 
-app.get('/',  (req, res)=>{
-    let prodsAct = productosActuales()
-    res.render('home', prodsAct)
-})
 
+// app.use() como uso viewsRouter con que api? 
 app.use('/api/products/', productsRouter)
 app.use('/api/cart/', cartRouter)
