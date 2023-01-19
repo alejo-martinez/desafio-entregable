@@ -147,3 +147,38 @@ export class ProductManager {
 
 // ARRAY DONDE SE MUESTRAN LOS PRODUCTOS CREADOS
 let arrayProduct = []
+
+
+// const cartOcupped = async() => {
+//     let cm = new CartManager('../cart.json')
+
+//     const arrayCarts = await cm.getCarts()
+//     for (let i= 0; i < arrayCarts.length; i++) {
+//         const element = arrayCarts[i].products
+//         if (element.length !== 0) {
+//            return element
+//         }
+//     }
+// }
+
+export const productosActuales = async () =>{
+    let pm = new ProductManager('../productos.json')
+    // let cartConProd = await cartOcupped()
+    // const prodActuales = []
+    const arrayProds = await pm.getProduct()
+    return arrayProds;
+    
+    // cartConProd.forEach(cart =>{
+        //     let idCart = cart.id;
+        //     let cantidad = cart.quantity;
+        
+        
+        //     let producto = arrayProds.find(prod => prod.id === idCart)
+        //     if (producto) {
+            //         prodActuales.push({...producto, quantity: cantidad})          
+            
+            //     }
+            // return prodActuales;
+            
+    // })
+}

@@ -42,7 +42,6 @@ router.post('/:cid/product/:pid', async(req, res)=>{
 
         let prodDuplicado = carritoBuscado.products.find(prod => prod.id === parseFloat(prodBuscado.id))
         
-        
         if (prodDuplicado) {
             prodDuplicado.quantity += 1
             let cartArray = carritosArray.filter(cart => cart.id !== parseFloat(cid))
