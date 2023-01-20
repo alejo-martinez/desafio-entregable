@@ -1,9 +1,12 @@
 import { Router } from "express";
 import { ProductManager } from "../index.js";
 
+
 const router = Router();
 const pm = new ProductManager('../productos.json')
 
+
+export let arrayActualizado ;
 
 router.get('/', async (req, res)=>{
     let file = await pm.getProduct()
@@ -23,11 +26,12 @@ router.get('/:pid', async (req, res)=>{
     } else{
         res.send(producto)
     }
+    
 })
 
 
 
-router.post('/', (req, res)=>{
+router.post('/', async (req, res)=>{
     let titulo = req.body.title
     let descripcion = req.body.description
     let precio = req.body.price
@@ -39,6 +43,10 @@ router.post('/', (req, res)=>{
     } else{
         pm.addProduct(titulo, descripcion, precio, imagen, codigo, cantidad)
         res.send({status: 'succes'})
+        
+        arrayActualizado = await pm.getProduct()
+        // io.emit('arrayNew', arrayActualizado)
+        // console.log(arrayActualizado);
     }
 })
 
