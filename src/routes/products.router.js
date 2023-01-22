@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { ProductManager } from "../index.js";
-
+import { io } from "../server.js";
 
 const router = Router();
 const pm = new ProductManager('../productos.json')
 
 
-export let arrayActualizado ;
+// export let arrayActualizado = await pm.getProduct();
+// console.log(arrayActualizado);
 
 router.get('/', async (req, res)=>{
     let file = await pm.getProduct()
@@ -41,14 +42,20 @@ router.post('/', async (req, res)=>{
     if (!titulo || !descripcion || !precio || !codigo || !cantidad) {
         res.send('Error, debes completar todos los campos')
     } else{
-        pm.addProduct(titulo, descripcion, precio, imagen, codigo, cantidad)
+        let producto = pm.addProduct(titulo, descripcion, precio, imagen, codigo, cantidad)
         res.send({status: 'succes'})
         
-        arrayActualizado = await pm.getProduct()
-        // io.emit('arrayNew', arrayActualizado)
-        // console.log(arrayActualizado);
+        // let arrayActualizado = await pm.getProduct()
+        
+        io.emit('prodNew', await producto)
+        // console.log(await producto);
+        
+        
     }
 })
+
+
+// io.emit('allProds', arrayActualizado)
 
 router.put('/:pid', async (req, res)=>{
     let idProducto = req.params.pid

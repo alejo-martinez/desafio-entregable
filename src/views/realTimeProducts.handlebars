@@ -1,5 +1,17 @@
-<div id="containerItem" style="display: flex; flex-flow: row wrap;">
+<div class="containerProd" id="containerItem">
+    {{#each prodActuales}}
+
+    <div class="cardProd" >
+    <h3>{{this.title}}</h3>
+    <p>{{this.description}}</p>
+    <p>Precio: ${{this.price}}</p>
+    <p>Stock: {{this.stock}}</p>
+    </div>
+    {{/each}}
 </div>
+
+
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/home.js"></script>

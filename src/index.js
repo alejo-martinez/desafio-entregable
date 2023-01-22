@@ -84,6 +84,10 @@ export class ProductManager {
         }
     }
 
+    // devolverProd (producto) {
+    //     return producto
+    // }
+
     async addProduct (title, description, price, thumbnail, code, stock) { 
         Product.prototype.id ;
         Product.prototype.status;
@@ -98,7 +102,10 @@ export class ProductManager {
             console.log('error al añadir el producto');
         }
     }
+    return producto
+
     }
+    
     async getProductById (id) {
         try {
             let archivoGuardado = JSON.parse(await fs.promises.readFile(this.path, 'utf-8'))

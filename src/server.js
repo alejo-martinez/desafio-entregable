@@ -6,11 +6,10 @@ import handlebars from 'express-handlebars'
 import path from 'path'
 import viewsRouter from './routes/views.router.js'
 import { Server } from 'socket.io'
-import { arrayActualizado } from './routes/products.router.js'
-// import products from '../productos.json'  assert {type: "json"};
-// import { ProductManager } from './index.js'
 
-// const pm = new ProductManager('../productos.json')
+import { ProductManager } from './index.js'
+
+const pm = new ProductManager('../productos.json')
 const app = express()
 const httpServer = app.listen(3005, ()=>{
     console.log('server iniciado');
@@ -33,18 +32,25 @@ app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
 let array ;
-io.on('connection', (socket)=>{
+io.on('connection', async (socket)=>{
     console.log('cliente conectado');
 
-    // socket.on('arrayNew', data=>{
-    //     array = data
-    //     // console.log(data);
-    //     // data.forEach(prod =>{
-    //     //     array.push(prod)
-    //     // })
-    // })
-    // console.log(arrayActualizado);
 
-    io.emit('array', arrayActualizado)
+    //    let arrayProd = await pm.getProduct()
+
+    //    socket.on('arrayAct', data =>{
+    //     console.log(typeof(data));
+    //    })
+
+    // socket.emit('arrayNew', arrayProd)
     
+//         // arrayProd.push(data)
+//         socket.emit('arrayNew', ar) socket.on('arrayAct', async (data) => {
+//         // await pm.addProduct(data.titulo, data.descripcion, data.precio, 'nada', data.codigo, data.stock)
+        
+//     })
+    // socket.emit('array', arrayActualizado)
+
 })
+
+// console.log(arrayActualizado);

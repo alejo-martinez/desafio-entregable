@@ -1,6 +1,6 @@
 import {productosActuales} from '../index.js'
 import {Router} from 'express'
-import { io } from '../server.js'
+// import { io } from '../server.js'
 // import { arrayActualizado } from './products.router.js'
 
 
@@ -13,10 +13,10 @@ router.get('/', async (req, res)=>{
 
 router.get('/realtimeproducts', async (req, res)=>{
     let prodActuales = await productosActuales()
-    // console.log(prodActuales);
-    io.emit('arrayAct', prodActuales)
+    // // console.log(prodActuales);
+    // io.emit('arrayAct', prodActuales)
     
-    res.render('realTimeProducts')
+    res.render('realTimeProducts', {prodActuales})
 })
 
 export default router
