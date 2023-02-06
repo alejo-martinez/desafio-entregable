@@ -4,15 +4,10 @@ import {__dirname} from '../utils.js'
 import { CartManager, ProductManager } from "../index.js";
 
 const router = Router()
-const cm = new CartManager('../cart.json')
-const pm = new ProductManager('../productos.json')
-
-// let id = 0;
-// const modificarId = () => {
-//     return id ++;
-// }
-
-// const arrayCarritos = []
+const pathCart = '../cart.json';
+const pathProduct = '../productos.json'
+const cm = new CartManager(pathCart)
+const pm = new ProductManager(pathProduct)
 
 router.post('/', async(req, res)=>{
     await cm.addCart()

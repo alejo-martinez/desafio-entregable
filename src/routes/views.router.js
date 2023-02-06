@@ -13,8 +13,6 @@ router.get('/', async (req, res)=>{
 
 router.get('/realtimeproducts', async (req, res)=>{
     let prodActuales = await productosActuales()
-    // // console.log(prodActuales);
-    // io.emit('arrayAct', prodActuales)
     
     res.render('realTimeProducts', {prodActuales})
 })
