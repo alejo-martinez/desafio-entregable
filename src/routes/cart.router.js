@@ -1,57 +1,74 @@
 import { Router } from "express";
-import fs from 'fs'
 import {__dirname} from '../utils.js'
-import { CartManager, ProductManager } from "../index.js";
+import { CartManagerMongo } from "../dao/cartManagerMongo.js";
+import { ProductManagerMongo } from "../dao/productManagerMongo.js";
+import { cartModel } from "../dao/models/cart.model.js";
+
 
 const router = Router()
-const pathCart = '../cart.json';
-const pathProduct = '../productos.json'
-const cm = new CartManager(pathCart)
-const pm = new ProductManager(pathProduct)
+const cm = new CartManagerMongo()
+const pm = new ProductManagerMongo()
 
 router.post('/', async(req, res)=>{
-    await cm.addCart()
-    res.send({status: 'ok'})
+    try {
+        let carritoNuevo = await cm.addCart()
+        res.send({status: 'ok', payload: carritoNuevo})
+    } catch (error) {
+        if (error) {
+            console.log('error al crear el nuevo carrito ' + error);
+        }
+    }
 })
 
 router.get('/:cid', async (req, res)=>{
-    let cid = req.params.cid;
-    let carritoBuscado = await cm.getCartById(cid)
-    if (!carritoBuscado) {
-        res.send('El carrito que estas buscando no existe')
-    } else{
-        res.send(carritoBuscado.products)
+    try {
+        let cid = req.params.cid;
+        let carritoBuscado = await cm.getCartById(cid)
+        if (!carritoBuscado) {
+            res.send('El carrito que estas buscando no existe')
+        } else{
+            res.send(carritoBuscado)
+        }
+    } catch (error) {
+        if (error) {
+            console.log('error al buscar el carrito solicitado ' + error);
+        }
     }
 })
 
 router.post('/:cid/product/:pid', async(req, res)=>{
-    let cid = req.params.cid;
-    let carritoBuscado = await cm.getCartById(cid)
-    if (!carritoBuscado) {
-        res.send('Error, el carrito que estas buscando no existe')
-    } else {
-        const carritosArray = await cm.getCarts()
-        let pid = req.params.pid;
-        const arrayProductos = await pm.getProduct()
-        let prodBuscado = arrayProductos.find(prod => prod.id === parseFloat(pid))
+    try {
+        let cid = req.params.cid;
+        let pid = req.params.pid
+        let carritoBuscado = await cm.getCartById(cid)
+        let duplicado = carritoBuscado[0].products.find(prod => prod.id === pid)
 
-        let prodDuplicado = carritoBuscado.products.find(prod => prod.id === parseFloat(prodBuscado.id))
-        
-        if (prodDuplicado) {
-            prodDuplicado.quantity += 1
-            let cartArray = carritosArray.filter(cart => cart.id !== parseFloat(cid))
-            cartArray.push(carritoBuscado)
-            await fs.promises.writeFile('../cart.json', JSON.stringify(cartArray, null, 2))
-            res.send({status: 'summed product'})
-        } else{
-            carritoBuscado.products.push({id: prodBuscado.id, quantity:1})
-            let nuevoCartArray = carritosArray.filter(cart => cart.id !== parseFloat(cid))
-            nuevoCartArray.push(carritoBuscado)
-            await fs.promises.writeFile('../cart.json', JSON.stringify(nuevoCartArray, null, 2))
+        if (!carritoBuscado) {
+            res.send('Error, el carrito que estas buscando no existe')
+        } else if(!duplicado){
+            await cartModel.updateOne({_id: cid}, {$set: {products: [{id: pid, quantity: 1}]}})
             res.send({status: 'succes'})
+        } else{
+            let cantidadProd = carritoBuscado[0].products[0].quantity
+            await cartModel.updateOne({_id: cid}, {$set: {products: [{id: pid, quantity: cantidadProd + 1}]}})
+            res.send({status: 'cantidad sumada'})
+        }
+    } catch (error) {
+        if (error) {
+            console.log('error al hacer el post del producto en el carrito ' + error);
         }
     }
+})
 
+router.get('/', async (req, res) =>{
+    try {
+        let carritos = await cm.getCart()
+        res.send(carritos)
+    } catch (error) {
+        if (error) {
+            console.log('error al mostrar los carritos ' + error);
+        }
+    }
 })
 
 export default router;

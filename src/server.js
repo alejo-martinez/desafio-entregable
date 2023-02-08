@@ -6,10 +6,10 @@ import handlebars from 'express-handlebars'
 import path from 'path'
 import viewsRouter from './routes/views.router.js'
 import { Server } from 'socket.io'
+import mongoose from 'mongoose'
 
-import { ProductManager } from './index.js'
 
-const pm = new ProductManager('../productos.json')
+
 const app = express()
 const httpServer = app.listen(3005, ()=>{
     console.log('server iniciado');
@@ -31,26 +31,18 @@ app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
-let array ;
+let mensajes = []
 io.on('connection', async (socket)=>{
     console.log('cliente conectado');
-
-
-    //    let arrayProd = await pm.getProduct()
-
-    //    socket.on('arrayAct', data =>{
-    //     console.log(typeof(data));
-    //    })
-
-    // socket.emit('arrayNew', arrayProd)
-    
-//         // arrayProd.push(data)
-//         socket.emit('arrayNew', ar) socket.on('arrayAct', async (data) => {
-//         // await pm.addProduct(data.titulo, data.descripcion, data.precio, 'nada', data.codigo, data.stock)
-        
-//     })
-    // socket.emit('array', arrayActualizado)
-
+    socket.on('mensaje', data =>{
+        mensajes.push(data)
+        io.emit('mensajesNuevos', mensajes)
+    })
 })
 
-// console.log(arrayActualizado);
+mongoose.connect('mongodb+srv://AlejoM:cluster0selacome@ecommerce.wuolt09.mongodb.net/?retryWrites=true&w=majority', error =>{
+    if (error) {
+        console.log('no se pudo realizar la conexion');
+        process.exit()
+    }
+})

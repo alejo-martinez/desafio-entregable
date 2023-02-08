@@ -1,0 +1,24 @@
+<div>
+    <h1>Chat</h1>
+</div>
+
+<div>
+    <input id="user" name="user" placeholder="¿como te llamas?">
+    <input id="sendMessage" name="sendMessage" placeholder="escribe tu mensaje.."/>
+</div>
+<button id="btnEnviar">Enviar</button>
+<div>
+    <p id="mensajesEscritos"></p>
+</div>
+
+<div >
+    <p id="mensajeNew"></p>
+</div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/chat.js"></script>
+
+<script>
+    const sockets = io.connect('http://localhost:3005/', {forceNew: true})
+</script>

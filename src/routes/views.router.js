@@ -1,20 +1,22 @@
-import {productosActuales} from '../index.js'
+import { ProductManagerMongo } from '../dao/productManagerMongo.js'
 import {Router} from 'express'
-// import { io } from '../server.js'
-// import { arrayActualizado } from './products.router.js'
 
-
+const pm = new ProductManagerMongo()
 const router = Router()
 
 router.get('/', async (req, res)=>{
-    let prodsAct = await productosActuales()
+    let prodsAct = await pm.getProduct()
     res.render('home', {prodsAct})
 })
 
 router.get('/realtimeproducts', async (req, res)=>{
-    let prodActuales = await productosActuales()
+    let prodActuales = await pm.getProduct()
     
     res.render('realTimeProducts', {prodActuales})
+})
+
+router.get('/chat', async(req, res)=>{
+    res.render('chat')
 })
 
 export default router

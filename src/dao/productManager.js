@@ -105,10 +105,3 @@ async deleteProduct (id) {
 
 // ARRAY DONDE SE MUESTRAN LOS PRODUCTOS CREADOS
 let arrayProduct = []
-
-
-export const productosActuales = async () =>{
-let pm = new ProductManager('../productos.json')
-const arrayProds = await pm.getProduct()
-return arrayProds;
-}
