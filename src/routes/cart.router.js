@@ -23,7 +23,7 @@ router.post('/', async(req, res)=>{
 router.get('/:cid', async (req, res)=>{
     try {
         let cid = req.params.cid;
-        let carritoBuscado = await cm.getCartById(cid)
+        let carritoBuscado = await cartModel.find({_id: cid}).populate('products.product')
         if (!carritoBuscado) {
             res.send('El carrito que estas buscando no existe')
         } else{
@@ -36,22 +36,33 @@ router.get('/:cid', async (req, res)=>{
     }
 })
 
-router.post('/:cid/product/:pid', async(req, res)=>{
+router.post('/:cid/products/:pid', async(req, res)=>{
     try {
         let cid = req.params.cid;
         let pid = req.params.pid
-        let carritoBuscado = await cm.getCartById(cid)
-        let duplicado = carritoBuscado[0].products.find(prod => prod.id === pid)
 
+        let carritoBuscado = await cm.getCartById(cid)
+        // console.log(carritoBuscado);
+        let duplicado = carritoBuscado.products.find(prod => prod.product == pid)
+        
         if (!carritoBuscado) {
             res.send('Error, el carrito que estas buscando no existe')
-        } else if(!duplicado){
-            await cartModel.updateOne({_id: cid}, {$set: {products: [{id: pid, quantity: 1}]}})
-            res.send({status: 'succes'})
-        } else{
-            let cantidadProd = carritoBuscado[0].products[0].quantity
-            await cartModel.updateOne({_id: cid}, {$set: {products: [{id: pid, quantity: cantidadProd + 1}]}})
+            
+        } else if(duplicado){
+            let cantidadProdDuplicado = duplicado.quantity
+            cantidadProdDuplicado += 1
+            let arrayNuevoProds = carritoBuscado.products.filter(prod => prod.product != pid)
+            arrayNuevoProds.push({product: pid, quantity: cantidadProdDuplicado})
+
+            await cartModel.updateOne({_id: cid}, {$set: {products:arrayNuevoProds}})
+
             res.send({status: 'cantidad sumada'})
+
+        } else if(!duplicado){
+            let agregarProd = carritoBuscado.products;       
+            agregarProd.push({product: pid, quantity: 1})
+            await cartModel.updateOne({_id: cid}, {$set: {products:agregarProd}})
+            res.send({status: 'succes'})
         }
     } catch (error) {
         if (error) {
@@ -68,6 +79,58 @@ router.get('/', async (req, res) =>{
         if (error) {
             console.log('error al mostrar los carritos ' + error);
         }
+    }
+})
+
+router.put('/:cid', async(req,res)=>{
+    try {
+    let cid = req.params.cid
+    let arrayActualizado = req.body
+    await cartModel.updateOne({_id: cid}, {$set: {products:arrayActualizado}})
+    res.send({status: 'array update!'})
+    } catch (error) {
+        if(error) console.log('error al actualizar el array de productos ' + error);       
+    }
+})
+
+router.put('/:cid/products/:pid', async(req, res)=>{
+    try {
+    let {cid, pid} = req.params
+    let cantidadActualizada = req.body.cantidad
+
+    let carritoBuscado = await cm.getCartById(cid)
+
+    let producto = carritoBuscado[0].products.find(prod => prod.id === pid)
+    producto.quantity = cantidadActualizada
+    let arrayActualizado = carritoBuscado[0].products.filter(prod => prod.id !== pid)
+    arrayActualizado.push(producto)
+    await cartModel.updateOne({_id: cid}, {$set: {products:arrayActualizado}})
+    res.send({status: 'quantity updated'})
+} catch (error) {
+        if(error) console.log('error al actualizar la cantidad ' + error);
+}
+})
+
+router.delete('/:cid', async(req, res)=>{
+    try {
+        let cid = req.params.cid
+        await cartModel.updateOne({_id: cid}, {$set: {products:[]}})
+        res.send({status: 'cart empty!'})
+    } catch (error) {
+        if(error) console.log('no se pudieron eliminar los productos del carrito ' + error);
+    }
+})
+
+router.delete('/:cid/products/:pid', async(req, res)=>{
+    try {
+        let {cid, pid} = req.params
+        let carritoSeleccionado = await cm.getCartById(cid)
+        let productosFiltrados = carritoSeleccionado[0].products.filter(prod => prod.id !== pid);
+        
+        await cartModel.updateOne({$set: {products:productosFiltrados}})
+        res.send({status: 'succes'})
+    } catch (error) {
+        if (error) console.log('error al borrar el producto del carrito ' + error) 
     }
 })
 

@@ -1,7 +1,7 @@
 const socket = io()
 
 let container = document.getElementById('containerItem')
-
+let btnEnviar = document.getElementById('enviarData')
 
 socket.on('prodNew',  data =>{
 
@@ -12,5 +12,8 @@ socket.on('prodNew',  data =>{
         <p>Precio: $${data.price} </p>
         <p>Stock: ${data.stock} </p>
         </div>`
-    
 })
+
+// btnEnviar.addEventListener('click', e=>{
+
+// })

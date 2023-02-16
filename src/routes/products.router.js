@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { io } from "../server.js";
 import { ProductManagerMongo } from "../dao/productManagerMongo.js";
+import { productModel } from "../dao/models/product.model.js";
 
 const router = Router();
 const pm = new ProductManagerMongo()
@@ -8,12 +9,86 @@ const pm = new ProductManagerMongo()
 
 router.get('/', async (req, res)=>{
     try {
-        let limit = req.query.limit
-        let productos = await pm.getProduct()
-        if (limit) {
-            res.send(productos.slice(0, limit))
+        const {limit = 10} = req.query
+        const {page=1} = req.query
+        const sort = req.query.sort
+        const query = req.query.query
+        const {docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages} = await productModel.paginate({}, {limit: limit, page, lean: true})
+        const productos = docs
+        let prevLink;
+        let nextLink;
+        
+        if (limit !== 10) {
+            if (hasNextPage === false)  nextLink = null
+            else nextLink = `http://localhost:3005/api/products?limit=${limit}&page=${nextPage}`
+            if (hasPrevPage === false) prevLink = null
+             else prevLink = `http://localhost:3005/api/products?limit=${limit}&page=${prevPage}`
+            let productosLimitados = productos.slice(0, limit)
+            res.send({
+                status: 'succes',
+                payload: productosLimitados,
+                totalPages: totalPages,
+                prevPage: prevPage,
+                nextPage: nextPage,
+                page: page,
+                hasPrevPage: hasPrevPage,
+                hasNextPage: hasNextPage,
+                prevLink: prevLink,
+                nextLink: nextLink
+            })
+        } else if (query) {
+            if (hasNextPage === false)  nextLink = null
+            else nextLink = `http://localhost:3005/api/products?query=stock&page=${nextPage}`
+            if (hasPrevPage === false) prevLink = null
+             else prevLink = `http://localhost:3005/api/products?query=stock&page=${prevPage}`
+            let filtrados = productos.filter(prod => prod.stock > 0)
+            res.send({
+                status: 'succes',
+                payload: filtrados,
+                totalPages: totalPages,
+                prevPage: prevPage,
+                nextPage: nextPage,
+                page: page,
+                hasPrevPage: hasPrevPage,
+                hasNextPage: hasNextPage,
+                prevLink: prevLink,
+                nextLink: nextLink
+            })
+        }else if (sort) {
+            if (hasNextPage === false)  nextLink = null
+            else nextLink = `http://localhost:3005/api/products?sort=${sort}&page=${nextPage}`
+            if (hasPrevPage === false) prevLink = null
+             else prevLink = `http://localhost:3005/api/products?sort=${sort}&page=${prevPage}`
+            let ordenados = await productModel.find({}).sort({price: sort}).exec()
+            res.send({
+                status: 'succes',
+                payload: ordenados,
+                totalPages: totalPages,
+                prevPage: prevPage,
+                nextPage: nextPage,
+                page: page,
+                hasPrevPage: hasPrevPage,
+                hasNextPage: hasNextPage,
+                prevLink: prevLink,
+                nextLink: nextLink
+            })
         } else{
-            res.send(productos)
+            if (hasNextPage === false)  nextLink = null
+            else nextLink = `http://localhost:3005/api/products?page=${nextPage}`
+            if (hasPrevPage === false) prevLink = null
+            else prevLink = `http://localhost:3005/api/products?page=${prevPage}`
+            res.send({
+                status: 'succes',
+                payload: productos,
+                totalPages: totalPages,
+                prevPage: prevPage,
+                nextPage: nextPage,
+                page: page,
+                hasPrevPage: hasPrevPage,
+                hasNextPage: hasNextPage,
+                prevLink: prevLink,
+                nextLink: nextLink
+            })
         }
         
     } catch (error) {

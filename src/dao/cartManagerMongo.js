@@ -15,11 +15,12 @@ export class CartManagerMongo {
     }
 
     async getCartById(id) {
-        return await cartModel.find({_id: id}).lean()
+        return await cartModel.findOne({_id: id}).lean()
     }
 
     async getCart(){
         let carritos = await cartModel.find()
+        
         return carritos
     }
 }

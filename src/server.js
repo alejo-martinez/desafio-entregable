@@ -40,9 +40,7 @@ io.on('connection', async (socket)=>{
     })
 })
 
-mongoose.connect('mongodb+srv://AlejoM:cluster0selacome@ecommerce.wuolt09.mongodb.net/?retryWrites=true&w=majority', error =>{
-    if (error) {
-        console.log('no se pudo realizar la conexion');
-        process.exit()
-    }
+mongoose.connect('mongodb+srv://AlejoM:cluster0selacome@ecommerce.wuolt09.mongodb.net/?retryWrites=true&w=majority', {
+    useNewUrlParser:true,
+    useUnifiedTopology:true,
 })
