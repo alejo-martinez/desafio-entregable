@@ -13,7 +13,3 @@ socket.on('prodNew',  data =>{
         <p>Stock: ${data.stock} </p>
         </div>`
 })
-
-// btnEnviar.addEventListener('click', e=>{
-
-// })

@@ -7,7 +7,9 @@ import path from 'path'
 import viewsRouter from './routes/views.router.js'
 import { Server } from 'socket.io'
 import mongoose from 'mongoose'
-
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import sessionRouter from './routes/session.router.js'
 
 
 const app = express()
@@ -15,6 +17,18 @@ const httpServer = app.listen(3005, ()=>{
     console.log('server iniciado');
 })
 export const io = new Server(httpServer)
+
+
+app.use(session({
+    store:MongoStore.create({
+        mongoUrl:'mongodb+srv://AlejoM:cluster0selacome@ecommerce.wuolt09.mongodb.net/?retryWrites=true&w=majority',
+        mongoOptions:{useNewUrlParser:true,useUnifiedTopology:true},
+        ttl:20
+    }),
+    secret:"secreCode",
+    resave:false,
+    saveUninitialized:false
+}))
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -25,6 +39,7 @@ app.use(express.static(__dirname+'/public'))
 app.use('/', viewsRouter)
 app.use('/api/cart/', cartRouter)
 app.use('/api/products/', productsRouter)
+app.use('/api/session/', sessionRouter)
 
 app.engine('handlebars', handlebars.engine())
 
