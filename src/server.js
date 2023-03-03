@@ -10,6 +10,8 @@ import mongoose from 'mongoose'
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import sessionRouter from './routes/session.router.js'
+import passport from 'passport'
+import initPassport from './config/passport.config.js'
 
 
 const app = express()
@@ -29,6 +31,11 @@ app.use(session({
     resave:false,
     saveUninitialized:false
 }))
+initPassport()
+
+app.use(passport.initialize())
+app.use(passport.session())
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))

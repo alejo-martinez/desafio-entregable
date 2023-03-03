@@ -6,9 +6,8 @@ import { userRegistered } from './session.router.js'
 
 const pm = new ProductManagerMongo()
 const router = Router()
-// console.log(userRegistered);
+
 router.get('/', async (req, res)=>{
-    // let prodsAct = await pm.getProduct()
     res.render('login')
 })
 
@@ -31,7 +30,6 @@ router.get('/products', async(req, res)=>{
     const productos = docs
     if (limit !== 10) {
 
-        // console.log(userRegistered);
         let prods = productos.slice(0, limit)
         res.render('productos',{prods, userRegistered})
     } else if (query) {

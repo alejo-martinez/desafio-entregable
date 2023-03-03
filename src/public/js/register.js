@@ -11,5 +11,9 @@ formRegistro.addEventListener('submit', e =>{
         headers: {
             'Content-type': 'application/json'
         }
-    })
+    }).then(result => result.json())
+    .then(json=>{
+        if(json.status === 'succes') window.location.replace('http://localhost:3005/')
+        console.log(json)
+    });
 })

@@ -1,38 +1,39 @@
 import { Router } from "express";
-import { userModel } from "../dao/models/user.model.js";
+import passport from "passport";
+// import { userModel } from "../dao/models/user.model.js";
+// import { createHash } from "../utils.js";
+// import { isValidPassword } from "../utils.js";
 
 const router = Router()
 
 export let userRegistered;
-router.post('/register', async(req, res)=>{
-    try {
-    const {name, last_name, email, password} = req.body
-    if(!name || !last_name || !email || !password) res.send({status:'error', error: 'debe completar todos los datos'})
 
-    const userExisting = await userModel.findOne({email})
-    if (userExisting) {
-        res.send({status: 'error', error: 'ya existe un usuario registrado con el email elegido'})
-    } else{
-        const usuario = await userModel.create({
-            name,
-            last_name,
-            email,
-            password
-        })
-        res.send({status: 'usuario creado con éxito', payload: usuario})
-    }
-    } catch (error) {
-        if(error) console.log('error al intentar hacer el registro de usuario ' + error);
-    }
+router.get('/github', passport.authenticate('github',{scope:['user:email']}, async(req,res)=>{
+
+}))
+
+router.get('/', passport.authenticate('github', {failureRedirect:'/login'}), async(req, res)=>{
+    console.log('-----> ' + JSON.stringify(req.user));
+    req.session.user = req.user
+    req.session.user.rol = 'usuario'
+    res.redirect('/products')
+    return userRegistered = req.user
 })
 
-router.post('/login', async(req, res)=>{
+router.post('/register',passport.authenticate('register',{failureRedirect:'/failregister'}), async(req, res)=>{
+    res.send({status:'succes', message:'usuario registrado'})
+})
+
+router.get('/failregister', async(req, res)=>{
+    console.log('fallo la estrategia');
+    res.send({error: 'Failed'})
+})
+
+
+router.post('/login',passport.authenticate('login', {failureRedirect:'/faillogin'}), async(req, res)=>{
     try {
     const {email, password} = req.body
-    if(!email || !password){
-        res.send({status: 'error', error: 'debes completar todos los campos'})
-    }
-    else if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
+     if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
         let idSesion = req.sessionID
         userRegistered = {
             name: 'adminCoder',
@@ -46,24 +47,31 @@ router.post('/login', async(req, res)=>{
         }
         userRegistered.rol = 'admin'
         res.send({status: 'succes'})
+        return userRegistered
     }
     else{
-        userRegistered = await userModel.findOne({email, password}).lean()
-        if (!userRegistered) {
-            res.send({status:'error', error:'el email o contraseña no coinciden'})
+        if (!req.user) {
+            res.status(400).send({status:'error', error:'contraseña inválida'})
         } else{
-            req.session.userRegistered = {
-                id: userRegistered._id,
-                email: userRegistered.email,
+            req.session.user = {
+                name: req.user.name,
+                last_name: req.user.last_name,
+                email: req.user.email,
             }
-            userRegistered.rol = 'usuario'
+            req.user.rol = 'usuario'
             res.send({status: 'succes', message: '¡usuario logueado!'})
-            return userRegistered
+            return userRegistered = req.user
+            
         }
     }
     } catch (error) {
         if(error) console.log('error al intentar iniciar sesion ' + error);
     }
+})
+
+router.get('/faillogin', async(req, res)=>{
+    console.log('fallo la estrategia');
+    res.send({error: 'Failed'})
 })
 router.delete('/login', (req, res)=>{
     req.session.destroy(error =>{
@@ -71,7 +79,6 @@ router.delete('/login', (req, res)=>{
         else res.send({status: 'succes', message: 'sesion cerrada con exito'})
     })
     userRegistered = ""
-    // res.redirect('/')
     
 })
 export default router
