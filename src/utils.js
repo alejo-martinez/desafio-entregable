@@ -9,12 +9,11 @@ export const isValidPassword = (user, password) => bcrypt.compareSync(password, 
 
 const __filename = fileURLToPath(import.meta.url);
 const storage = multer.diskStorage({
-    destination:function(req,file,cb){
+    destination: function(req,file,cb){
         cb(null,`${__dirname}/public/images`)
     },
-    filename:function(req,file,cb){
-        console.log(file);
-        cb(null,`${Date.now()}-${file.originalname}`)
+    filename: function(req,file,cb){
+        cb(null,file.originalname)
     }
 })
 

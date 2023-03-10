@@ -45,6 +45,9 @@ const initPassport = ()=>{
                         if(!user){
                             console.log('el usuario no existe');
                             return done(null, false)
+                        } if (!password) {
+                            console.log('Debe ingresar una contraseña');
+                            return done(null, false)
                         }
                         if (!isValidPassword(user,password)) {
                             return done(null, false)

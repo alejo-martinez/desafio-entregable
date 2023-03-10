@@ -2,6 +2,7 @@ import { Router } from "express";
 import { io } from "../server.js";
 import { ProductManagerMongo } from "../dao/productManagerMongo.js";
 import { productModel } from "../dao/models/product.model.js";
+import { uploader } from "../utils.js";
 
 const router = Router();
 const pm = new ProductManagerMongo()
@@ -89,6 +90,7 @@ router.get('/', async (req, res)=>{
                 prevLink: prevLink,
                 nextLink: nextLink
             })
+
         }
         
     } catch (error) {
@@ -116,17 +118,23 @@ router.get('/:pid', async (req, res)=>{
 
 
 
-router.post('/', async (req, res)=>{
+router.post('/', uploader.single('file'),async (req, res)=>{
     try {
     let titulo = req.body.title
     let descripcion = req.body.description
     let precio = req.body.price
     let codigo = req.body.code
     let cantidad = req.body.stock
+    let nombreImg = req.file.filename
+
+    let ruta = `http://localhost:3005/images/${nombreImg}` 
+    if (!req.file) {
+        return res.status(400).send({status:"error",error:"La imagen no pudo ser guardada"})
+    }
     if (!titulo || !descripcion || !precio || !codigo || !cantidad) {
         res.send('Error, debes completar todos los campos')
     } else{
-        let prod = await pm.addProduct(titulo, descripcion, precio, codigo, cantidad)
+        let prod = await pm.addProduct(titulo, descripcion, precio, ruta, codigo, cantidad)
         res.send({status: 'succes', payload: prod})
         io.emit('prodNew',  prod)
     } 

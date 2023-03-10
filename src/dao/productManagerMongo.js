@@ -1,4 +1,5 @@
 import { productModel } from "./models/product.model.js";
+import { __dirname } from "../utils.js";
 
 export class ProductManagerMongo {
     constructor (){
@@ -31,13 +32,13 @@ export class ProductManagerMongo {
         }
     }
 
-    async addProduct (title, description, price, code, stock){
+    async addProduct (title, description, price, img, code, stock){
         try {
             let producto = await productModel.create({
             title: title,
             description: description,
             price: price,
-            thumbnail: 'nada',
+            thumbnail: img,
             code: code,
             stock: stock,
             status: true

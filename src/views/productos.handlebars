@@ -1,19 +1,35 @@
 {{#if userRegistered}}
-<nav>
+<nav class="nav">
+    <div class="nav-user">
     <h4>Bienvenido {{userRegistered.name}} ! Tu rol es: {{userRegistered.rol}}</h4>
-    <button id="logout">Logout</button>
+    <button id="logout" class="btn-logout">Logout</button>
+    </div>
 </nav>
 <div class="containerProd">
     {{#each prods}}
 
-    <div class="cardProd">
-    <h3>{{this.title}}</h3>
-    <p>{{this.description}}</p>
-    <p>Precio: ${{this.price}}</p>
+    <div class="product-card cardProd">
+  <div class="product-card-thumbnail container-img">
+    <img src={{this.thumbnail}} />
+  </div>
+  <h2 class="product-card-title">{{this.title}}</h2>
+  <span class="product-card-desc">{{this.description}}</span>
+  <span class="product-card-price">${{this.price}}</span>
+  <br>
+  <span class="product-card-price">Stock: {{this.stock}}</span>
+  <br>
+  <button class="button-hover-addcart button"><span>Add to cart</span><i class="fa fa-shopping-cart"></i></button>
+
+</div>
+
+    {{!-- <div class="cardProd">
+    <h3></h3>
+    <p></p>
+    <p>Precio: $</p>
     <p>Stock: {{this.stock}}</p>
 
-    <button id="enviarData">Agregar al carrito</button>
-    </div>
+    <button id="enviarData" class="btn-add">Agregar al carrito</button>
+    </div> --}}
     {{/each}}
     <script src="/js/products.js"></script>
 </div>

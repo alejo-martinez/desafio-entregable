@@ -55,6 +55,10 @@ router.get('/carts/:cid', async(req, res)=>{
     
     res.render('carts', {listaProds})
 })
+
+router.get('/administrar', async(req, res)=>{
+    res.render('administrar')
+})
 // router.get('/chat', async(req, res)=>{
 //     res.render('chat')
 // })

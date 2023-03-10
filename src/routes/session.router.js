@@ -13,7 +13,6 @@ router.get('/github', passport.authenticate('github',{scope:['user:email']}, asy
 }))
 
 router.get('/', passport.authenticate('github', {failureRedirect:'/login'}), async(req, res)=>{
-    console.log('-----> ' + JSON.stringify(req.user));
     req.session.user = req.user
     req.session.user.rol = 'usuario'
     res.redirect('/products')
