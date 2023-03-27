@@ -12,10 +12,11 @@ import MongoStore from "connect-mongo";
 import sessionRouter from './routes/session.router.js'
 import passport from 'passport'
 import initPassport from './config/passport.config.js'
+import config from './config/config.js'
 
 
 const app = express()
-const httpServer = app.listen(3005, ()=>{
+const httpServer = app.listen(parseFloat(config.port), ()=>{
     console.log('server iniciado');
 })
 export const io = new Server(httpServer)
@@ -23,7 +24,7 @@ export const io = new Server(httpServer)
 
 app.use(session({
     store:MongoStore.create({
-        mongoUrl:'mongodb+srv://AlejoM:cluster0selacome@ecommerce.wuolt09.mongodb.net/?retryWrites=true&w=majority',
+        mongoUrl:config.mongoURL,
         mongoOptions:{useNewUrlParser:true,useUnifiedTopology:true},
         ttl:20
     }),

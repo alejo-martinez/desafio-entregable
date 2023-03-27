@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {__dirname} from '../utils.js'
-import { CartManagerMongo } from "../dao/cartManagerMongo.js";
-import { ProductManagerMongo } from "../dao/productManagerMongo.js";
+import { CartManagerMongo } from "../dao/service/cartManagerMongo.js";
+import { ProductManagerMongo } from "../dao/service/productManagerMongo.js";
 import { cartModel } from "../dao/models/cart.model.js";
 
 

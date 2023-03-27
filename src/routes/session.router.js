@@ -1,8 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-// import { userModel } from "../dao/models/user.model.js";
-// import { createHash } from "../utils.js";
-// import { isValidPassword } from "../utils.js";
+import config from "../config/config.js";
 
 const router = Router()
 
@@ -32,17 +30,17 @@ router.get('/failregister', async(req, res)=>{
 router.post('/login',passport.authenticate('login', {failureRedirect:'/faillogin'}), async(req, res)=>{
     try {
     const {email, password} = req.body
-     if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
+     if (email === config.adminEmail && password === config.adminPass) {
         let idSesion = req.sessionID
         userRegistered = {
             name: 'adminCoder',
             last_name: "",
-            email: 'adminCoder@coder.com',
-            password: 'adminCod3r123',
+            email: config.adminEmail,
+            password: config.adminPass,
         }
         req.session.userRegistered = {
             id: idSesion,
-            email: 'adminCoder@coder.com',
+            email: config.adminEmail,
         }
         userRegistered.rol = 'admin'
         res.send({status: 'succes'})

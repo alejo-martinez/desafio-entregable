@@ -1,5 +1,5 @@
-import { productModel } from "./models/product.model.js";
-import { __dirname } from "../utils.js";
+import { productModel } from "../models/product.model.js";
+import { __dirname } from "../../utils.js";
 
 export class ProductManagerMongo {
     constructor (){

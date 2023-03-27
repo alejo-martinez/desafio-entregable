@@ -1,4 +1,4 @@
-import { ProductManagerMongo } from '../dao/productManagerMongo.js'
+import { ProductManagerMongo } from '../dao/service/productManagerMongo.js'
 import {Router} from 'express'
 import { productModel } from '../dao/models/product.model.js'
 import { cartModel } from '../dao/models/cart.model.js'
