@@ -1,81 +1,24 @@
 import { Router } from "express";
 import passport from "passport";
-import config from "../config/config.js";
+import { createUser, failLogin, failRegister, getGithubUser, logOut, userLogin } from "../controllers/session.controller.js";
 
 const router = Router()
 
-export let userRegistered;
 
 router.get('/github', passport.authenticate('github',{scope:['user:email']}, async(req,res)=>{
 
 }))
 
-router.get('/', passport.authenticate('github', {failureRedirect:'/login'}), async(req, res)=>{
-    req.session.user = req.user
-    req.session.user.rol = 'usuario'
-    res.redirect('/products')
-    return userRegistered = req.user
-})
+router.get('/', passport.authenticate('github', {failureRedirect:'/login'}), getGithubUser)
 
-router.post('/register',passport.authenticate('register',{failureRedirect:'/failregister'}), async(req, res)=>{
-    res.send({status:'succes', message:'usuario registrado'})
-})
+router.post('/register',passport.authenticate('register',{failureRedirect:'/failregister'}), createUser)
 
-router.get('/failregister', async(req, res)=>{
-    console.log('fallo la estrategia');
-    res.send({error: 'Failed'})
-})
+router.get('/failregister', failRegister)
 
+router.post('/login',passport.authenticate('login', {failureRedirect:'/faillogin'}), userLogin)
 
-router.post('/login',passport.authenticate('login', {failureRedirect:'/faillogin'}), async(req, res)=>{
-    try {
-    const {email, password} = req.body
-     if (email === config.adminEmail && password === config.adminPass) {
-        let idSesion = req.sessionID
-        userRegistered = {
-            name: 'adminCoder',
-            last_name: "",
-            email: config.adminEmail,
-            password: config.adminPass,
-        }
-        req.session.userRegistered = {
-            id: idSesion,
-            email: config.adminEmail,
-        }
-        userRegistered.rol = 'admin'
-        res.send({status: 'succes'})
-        return userRegistered
-    }
-    else{
-        if (!req.user) {
-            res.status(400).send({status:'error', error:'contraseña inválida'})
-        } else{
-            req.session.user = {
-                name: req.user.name,
-                last_name: req.user.last_name,
-                email: req.user.email,
-            }
-            req.user.rol = 'usuario'
-            res.send({status: 'succes', message: '¡usuario logueado!'})
-            return userRegistered = req.user
-            
-        }
-    }
-    } catch (error) {
-        if(error) console.log('error al intentar iniciar sesion ' + error);
-    }
-})
+router.get('/faillogin', failLogin)
 
-router.get('/faillogin', async(req, res)=>{
-    console.log('fallo la estrategia');
-    res.send({error: 'Failed'})
-})
-router.delete('/login', (req, res)=>{
-    req.session.destroy(error =>{
-        if(error) res.send({status:'error', message: 'no pudimos cerrar la sesion'})
-        else res.send({status: 'succes', message: 'sesion cerrada con exito'})
-    })
-    userRegistered = ""
-    
-})
+router.delete('/login', logOut)
+
 export default router
