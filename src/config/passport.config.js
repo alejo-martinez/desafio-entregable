@@ -3,9 +3,34 @@ import local from 'passport-local'
 import { userModel } from "../dao/models/user.model.js";
 import { createHash, isValidPassword } from "../utils.js";
 import githubService from 'passport-github2'
+import UserDTO from "../dao/DTOs/user.dto.js";
+import jwt from 'passport-jwt'
 
-const localStrategy = local.Strategy
+const JWTstrategy = jwt.Strategy;
+const localStrategy = local.Strategy;
+
+const ExtractJWT = jwt.ExtractJwt;
+
+const cookieExtractor = req =>{
+    let token = null;
+    if(req && req.cookies){
+        token = req.cookies['coderCookieToken']
+    }
+    return token;
+}
 const initPassport = ()=>{
+    passport.use('jwt', new JWTstrategy({
+        jwtFromRequest:ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey:'coderSecret'
+    }, async (jwt_payload, done)=>{
+        try {
+            return done(null, jwt_payload)
+        } catch (error) {
+            return done(error);
+        }
+    }))
+    
+
     passport.use('register', new localStrategy(
         {passReqToCallback:true, usernameField:'email'}, async(req, username, passport, done) =>{
             const {name, last_name, email, password} = req.body;
@@ -15,12 +40,7 @@ const initPassport = ()=>{
                     console.log('usuario ya existe ');
                     return done(null, false)
                 } else{
-                    const result = {
-                        name,
-                        last_name,
-                        email,
-                        password: createHash(password)
-                    }
+                    const result = new UserDTO({name, last_name, email, password})
                     let newUser = await userModel.create(result)
                     return done(null, newUser)
                 }

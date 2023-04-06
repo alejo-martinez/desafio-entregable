@@ -1,6 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { createUser, failLogin, failRegister, getGithubUser, logOut, userLogin } from "../controllers/session.controller.js";
+import { authToken, strategyPassport } from "../utils.js";
 
 const router = Router()
 
@@ -20,5 +21,9 @@ router.post('/login',passport.authenticate('login', {failureRedirect:'/faillogin
 router.get('/faillogin', failLogin)
 
 router.delete('/login', logOut)
+
+router.get('/current', strategyPassport('jwt'), (req,res)=>{
+    res.send(req.user);
+})
 
 export default router

@@ -1,11 +1,14 @@
 {{#if userRegistered}}
+
 <nav class="nav">
     <div class="nav-user">
     <h4>Bienvenido {{userRegistered.name}}!</h4>
     <h4>Tu rol es: {{userRegistered.rol}}</h4>
     <button id="logout" class="btn-logout">Logout</button>
+    <button id="goCarrito">Carrito</button>
     </div>
 </nav>
+
 <div class="containerProd">
     {{#each prods}}
 
@@ -13,13 +16,14 @@
   <div class="product-card-thumbnail container-img">
     <img src={{this.thumbnail}} />
   </div>
-  <h2 class="product-card-title">{{this.title}}</h2>
+  <span class="oculto">{{this._id}}</span>
+  <h2 class="product-card-title" id="titulo">{{this.title}}</h2>
   <span class="product-card-desc">{{this.description}}</span>
   <span class="product-card-price">${{this.price}}</span>
   <br>
   <span class="product-card-price">Stock: {{this.stock}}</span>
   <br>
-  <button class="button-hover-addcart button"><span>Add to cart</span><i class="fa fa-shopping-cart"></i></button>
+  <button class="button-hover-addcart button agregarCarritoC" id="agregarCarrito" onclick="addCarrito('{{this._id}}')"><span>Add</span><i class="fa fa-shopping-cart"></i></button>
 
 </div>
 
@@ -55,4 +59,3 @@
 
 <script src="/js/products.js"></script>
 {{/if}}
-

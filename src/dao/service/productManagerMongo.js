@@ -1,6 +1,6 @@
 import { productModel } from "../models/product.model.js";
 import { __dirname } from "../../utils.js";
-
+import { productRepository } from "../../repository/index.js";
 export class ProductManagerMongo {
     constructor (){
         this.array = []
@@ -8,8 +8,7 @@ export class ProductManagerMongo {
 
     async getProduct () {
         try {
-            let productos = await productModel.find().lean()
-            return productos;
+            productRepository.get()
         } catch (error) {
             if (error) {
                 console.log('error al leer el archivo');
@@ -19,7 +18,7 @@ export class ProductManagerMongo {
 
     async getProductById(id){
         try {
-            let producto = await productModel.find({_id: id})
+            let producto = productRepository.getById(id)
             if (!producto) {
                 console.log('el producto que estas buscando no existe');
             } else{
@@ -34,15 +33,7 @@ export class ProductManagerMongo {
 
     async addProduct (title, description, price, img, code, stock){
         try {
-            let producto = await productModel.create({
-            title: title,
-            description: description,
-            price: price,
-            thumbnail: img,
-            code: code,
-            stock: stock,
-            status: true
-            })
+            let producto = productRepository.createProduct({title, description, price, img, code, stock})
             return producto
         } catch (error) {
             if (error) {
@@ -53,8 +44,7 @@ export class ProductManagerMongo {
 
     async updateProduct(id, campo, valor) {
         try {
-            let productoActualizado = await productModel.updateOne({_id: id}, {$set: {[campo]: valor}})
-            return productoActualizado;
+            productRepository.updateProduct(id, campo, valor)
         } catch (error) {
             if (error) {
              console.log('error al actualizar el producto');   
@@ -64,7 +54,7 @@ export class ProductManagerMongo {
 
     async deleteProduct(id) {
         try {
-            await productModel.deleteOne({_id: id})
+            productRepository.deleteProduct(id)
         } catch (error) {
             if (error) {
                 console.log('error al borrar el producto');

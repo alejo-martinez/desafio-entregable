@@ -13,6 +13,8 @@ import sessionRouter from './routes/session.router.js'
 import passport from 'passport'
 import initPassport from './config/passport.config.js'
 import config from './config/config.js'
+import cookieParser from 'cookie-parser'
+
 
 
 const app = express()
@@ -36,7 +38,7 @@ initPassport()
 
 app.use(passport.initialize())
 app.use(passport.session())
-
+app.use(cookieParser('CoderS3cR3tC0D3'))
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -53,6 +55,8 @@ app.engine('handlebars', handlebars.engine())
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
+
+
 
 let mensajes = []
 io.on('connection', async (socket)=>{

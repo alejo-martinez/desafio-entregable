@@ -1,12 +1,9 @@
 import { cartModel } from "../models/cart.model.js";
-
+import { cartRepository } from "../../repository/index.js";
 export class CartManagerMongo {
     async addCart() {
         try {
-            let carrito = await cartModel.create({
-                products:[]
-            })
-            return carrito
+            cartRepository.createCart();
         } catch (error) {
             if (error) {
                 console.log('error al crear el carrito ' + error);
@@ -15,12 +12,19 @@ export class CartManagerMongo {
     }
 
     async getCartById(id) {
-        return await cartModel.findOne({_id: id}).lean()
+        try {
+            return cartRepository.getById(id)
+        } catch (error) {
+            if(error) console.log('error al obtener el carrito ' + error);
+        }
     }
 
     async getCart(){
-        let carritos = await cartModel.find()
-        
-        return carritos
+        try {
+            return cartRepository.get();
+        } catch (error) {
+            if(error) console.log('error al obtener los carritos ' + error);
+        }
+
     }
 }

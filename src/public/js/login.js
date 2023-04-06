@@ -16,6 +16,7 @@ formLogin.addEventListener('submit', e=>{
         }
     }).then(result => result.json())
     .then(json=>{
+        // localStorage.setItem('authToken', json.token)
         if(json.status === 'succes') window.location.replace('http://localhost:3005/products')
         console.log(json)
     });

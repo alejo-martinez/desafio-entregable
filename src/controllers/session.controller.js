@@ -1,4 +1,5 @@
 import config from "../config/config.js";
+import { generateToken } from "../utils.js";
 
 
 export let userRegistered;
@@ -6,7 +7,8 @@ export let userRegistered;
 export const getGithubUser = async(req, res)=>{
     req.session.user = req.user
     req.session.user.rol = 'usuario'
-    res.redirect('/products')
+    const acces_token = generateToken(req.session.user)
+    res.cookie('accesToken', acces_token, {maxAge:60*60*1000, signed:true, httpOnly: true}).redirect('/products')
     return userRegistered = req.user
 }
 
@@ -35,7 +37,9 @@ export const userLogin = async(req, res)=>{
             email: config.adminEmail,
         }
         userRegistered.rol = 'admin'
-        res.send({status: 'succes'})
+        const acces_token = generateToken(userRegistered)
+        res.cookie('accesToken', acces_token, {maxAge: 60*60*1000, signed: true, httpOnly: true}).send({status:'succes', payload: acces_token})
+        // res.send({status: 'succes', payload: acces_token})
         return userRegistered
     }
     else{
@@ -48,7 +52,8 @@ export const userLogin = async(req, res)=>{
                 email: req.user.email,
             }
             req.user.rol = 'usuario'
-            res.send({status: 'succes', message: '¡usuario logueado!'})
+            const acces_token = generateToken(req.user)
+            res.cookie('accesToken', acces_token, {maxAge: 60*60*1000, signed: true, httpOnly: true}).send({status:'succes', message: '¡usuario logueado!'})
             return userRegistered = req.user
             
         }
@@ -63,11 +68,15 @@ export const failLogin = async(req, res)=>{
     res.send({error: 'Failed'})
 }
 
-export const logOut = (req, res)=>{
+export const logOut = async (req, res)=>{
     req.session.destroy(error =>{
         if(error) res.send({status:'error', message: 'no pudimos cerrar la sesion'})
-        else res.send({status: 'succes', message: 'sesion cerrada con exito'})
+        else res.clearCookie('accesToken').send({status: 'succes', message: 'sesion cerrada con exito'})
     })
     userRegistered = ""
     
 }
+
+// export const current = (req, res) =>{
+//     res.send(req.user)
+// }

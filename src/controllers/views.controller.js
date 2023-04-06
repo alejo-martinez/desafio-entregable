@@ -2,9 +2,10 @@ import { ProductManagerMongo } from '../dao/service/productManagerMongo.js'
 import { productModel } from '../dao/models/product.model.js'
 import { cartModel } from '../dao/models/cart.model.js'
 import { userRegistered } from './session.controller.js'
+import { CartManagerMongo } from '../dao/service/cartManagerMongo.js'
 
-const pm = new ProductManagerMongo()
-
+const pm = new ProductManagerMongo();
+const cm = new CartManagerMongo();
 
 export const login = async (req, res)=>{
     res.render('login')
@@ -27,10 +28,15 @@ export const renderProducts = async(req, res)=>{
     const query = req.query.query
     const {docs} = await productModel.paginate({}, {limit: limit, page, lean: true})
     const productos = docs
+    let carrito = await cm.getCart();
+    let idCart = carrito[0]._id;
+    let carritoBuscado = await cm.getCartById(idCart);
+    let prodEnCart = carritoBuscado.products
+
     if (limit !== 10) {
 
         let prods = productos.slice(0, limit)
-        res.render('productos',{prods, userRegistered})
+        res.render('productos',{prods, userRegistered, idCart})
     } else if (query) {
 
         let prods = productos.filter(prod => prod.stock > 0)
@@ -56,5 +62,9 @@ export const renderCartId = async(req, res)=>{
 }
 
 export const administer = async(req, res)=>{
-    res.render('administrar')
+    if (userRegistered.rol === "admin") {
+        res.render('administrar')
+    } else {
+        res.render('sinPermisos')
+    }
 }

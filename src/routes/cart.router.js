@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {__dirname} from '../utils.js'
-import { createCart, getCartId, addProductInCart, getCarts, updateCart, updateProductInCart, deleteCart, deleteProductInCart } from "../controllers/cart.controller.js";
+import { createCart, getCartId, addProductInCart, getCarts, updateCart, updateProductInCart, deleteCart, deleteProductInCart, endPurchase } from "../controllers/cart.controller.js";
 
 const router = Router()
 
@@ -10,6 +10,8 @@ router.post('/', createCart)
 router.get('/', getCarts)
 
 router.get('/:cid', getCartId)
+
+router.post('/:cid/purchase', endPurchase)
 
 router.post('/:cid/products/:pid', addProductInCart)
 

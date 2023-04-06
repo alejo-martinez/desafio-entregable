@@ -172,6 +172,9 @@ img {
 
 /* FOUNDATION */
 
+.oculto {
+  display: none;
+}
 
 .product-card {
     background-color: #fefefe;
