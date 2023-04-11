@@ -23,7 +23,7 @@ export const failRegister = async(req, res)=>{
 
 export const userLogin = async(req, res)=>{
     try {
-    const {email, password} = req.body
+    const {email, password} = req.body;
      if (email === config.adminEmail && password === config.adminPass) {
         let idSesion = req.sessionID
         userRegistered = {
@@ -31,15 +31,15 @@ export const userLogin = async(req, res)=>{
             last_name: "",
             email: config.adminEmail,
             password: config.adminPass,
+            admin: true
         }
-        req.session.userRegistered = {
+        req.session.user = {
             id: idSesion,
             email: config.adminEmail,
+            admin: true
         }
-        userRegistered.rol = 'admin'
         const acces_token = generateToken(userRegistered)
         res.cookie('accesToken', acces_token, {maxAge: 60*60*1000, signed: true, httpOnly: true}).send({status:'succes', payload: acces_token})
-        // res.send({status: 'succes', payload: acces_token})
         return userRegistered
     }
     else{
@@ -50,8 +50,9 @@ export const userLogin = async(req, res)=>{
                 name: req.user.name,
                 last_name: req.user.last_name,
                 email: req.user.email,
+                admin: false
             }
-            req.user.rol = 'usuario'
+            
             const acces_token = generateToken(req.user)
             res.cookie('accesToken', acces_token, {maxAge: 60*60*1000, signed: true, httpOnly: true}).send({status:'succes', message: '¡usuario logueado!'})
             return userRegistered = req.user
@@ -76,7 +77,3 @@ export const logOut = async (req, res)=>{
     userRegistered = ""
     
 }
-
-// export const current = (req, res) =>{
-//     res.send(req.user)
-// }

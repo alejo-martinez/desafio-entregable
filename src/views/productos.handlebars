@@ -1,14 +1,15 @@
 {{#if userRegistered}}
 
+
 <nav class="nav">
     <div class="nav-user">
     <h4>Bienvenido {{userRegistered.name}}!</h4>
-    <h4>Tu rol es: {{userRegistered.rol}}</h4>
+    <h4>Admin: {{userRegistered.admin}}</h4>
     <button id="logout" class="btn-logout">Logout</button>
     <button id="goCarrito">Carrito</button>
+    <button><a href="/administrar">Administrar productos</a></button>
     </div>
 </nav>
-
 <div class="containerProd">
     {{#each prods}}
 
@@ -39,7 +40,7 @@
     <script src="/js/products.js"></script>
 </div>
 {{else}}
-<nav style="display: none;">
+<nav style="display: none">
     <h4>Bienvenido {{email}} !</h4>
     <button id="logout">Logout</button>
 </nav>
@@ -56,6 +57,7 @@
     </div>
     {{/each}}
 </div>
+
 
 <script src="/js/products.js"></script>
 {{/if}}

@@ -3,6 +3,7 @@ import { productModel } from '../dao/models/product.model.js'
 import { cartModel } from '../dao/models/cart.model.js'
 import { userRegistered } from './session.controller.js'
 import { CartManagerMongo } from '../dao/service/cartManagerMongo.js'
+import { cartRepository } from '../repository/index.js'
 
 const pm = new ProductManagerMongo();
 const cm = new CartManagerMongo();
@@ -32,11 +33,14 @@ export const renderProducts = async(req, res)=>{
     let idCart = carrito[0]._id;
     let carritoBuscado = await cm.getCartById(idCart);
     let prodEnCart = carritoBuscado.products
-
+    let admin ;
+    if (userRegistered.rol === 'admin') {
+        return admin = 'admin'
+    }
     if (limit !== 10) {
 
         let prods = productos.slice(0, limit)
-        res.render('productos',{prods, userRegistered, idCart})
+        res.render('productos',{prods, userRegistered, idCart, admin})
     } else if (query) {
 
         let prods = productos.filter(prod => prod.stock > 0)
@@ -50,21 +54,18 @@ export const renderProducts = async(req, res)=>{
     }
 }
 
+
 export const renderCartId = async(req, res)=>{
     let cid = req.params.cid
-    let carritoBuscado = await cartModel.find({_id: cid}).lean().populate('products.product')
-    let listaProds = [];
-    for (let index = 0; index < carritoBuscado[0].products.length; index++) {
-        listaProds.push(carritoBuscado[0].products[index].product)
-    }
-    
-    res.render('carts', {listaProds})
+    let carritoBuscado = await cartRepository.getPopulate(cid)
+    let carritoDeProds = carritoBuscado[0].products;
+    carritoDeProds.forEach(prod => {
+        prod.product.price *= prod.quantity;
+        prod.product.cartId = cid;
+    })
+    res.render('carts', {carritoDeProds})
 }
 
 export const administer = async(req, res)=>{
-    if (userRegistered.rol === "admin") {
         res.render('administrar')
-    } else {
-        res.render('sinPermisos')
-    }
 }

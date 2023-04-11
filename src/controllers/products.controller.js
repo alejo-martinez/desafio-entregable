@@ -1,7 +1,8 @@
 import { io } from "../server.js";
 import { ProductManagerMongo } from "../dao/service/productManagerMongo.js";
 import { productModel } from "../dao/models/product.model.js";
-
+import { productRepository } from "../repository/index.js";
+import ProductDTO from "../dao/DTOs/product.dto.js";
 
 const pm = new ProductManagerMongo()
 
@@ -129,7 +130,8 @@ export const createProduct = async (req, res)=>{
     if (!titulo || !descripcion || !precio || !codigo || !cantidad) {
         res.send('Error, debes completar todos los campos')
     } else{
-        let prod = await pm.addProduct(titulo, descripcion, precio, ruta, codigo, cantidad)
+        let producto = new ProductDTO(titulo, descripcion, precio, ruta, codigo, cantidad)
+        let prod = await productRepository.createProduct(producto)
         res.send({status: 'succes', payload: prod})
         io.emit('prodNew',  prod)
     } 
@@ -146,8 +148,8 @@ export const updateProductById = async (req, res)=>{
         let idProducto = req.params.pid
         let propiedad = req.body.campo
         let value = req.body.valor
-        let productoActualizado = await pm.updateProduct(idProducto, propiedad, value)
-        res.send({status: 'succes', payload: productoActualizado})
+        await productRepository.updateProduct(idProducto, propiedad, value)
+        res.send({status: 'succes'})
     } catch (error) {
         if (error) {
             console.log('error al actualizar el producto' + error);
@@ -158,7 +160,7 @@ export const updateProductById = async (req, res)=>{
 export const deleteProductById = async (req, res)=>{
     try {
         let idP = req.params.pid;
-        await pm.deleteProduct(idP)
+        await productRepository.deleteProduct(idP)
         res.send({status: 'succes'})
     } catch (error) {
         if (error) {

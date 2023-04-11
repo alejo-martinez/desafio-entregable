@@ -4,10 +4,6 @@ const goCarrito = document.getElementById('goCarrito')
 
 const tituloProd = document.getElementById('titulo');
 
-// const traerCarritos = async() =>{
-//     const response = await fetch('/api/cart', {method:'GET'})
-//     const carritos = await response.json()
-// }
 
 goCarrito.addEventListener('click', async(e) =>{
     e.preventDefault();
@@ -28,26 +24,9 @@ const addCarrito = async (param)=>{
         const response2 = await fetch('/api/cart', {method:'GET'}) 
         const carritosNuevos = await response2.json()
         let idCarrito = carritosNuevos[0]._id;
-        await fetch(`/api/cart/${idCarrito}/products/${param}`, {method:'POST'}) 
+        await fetch(`/api/cart/${idCarrito}/products/${param}`, {method:'POST'})
     }
 }
-
-// agregarCarrito.addEventListener('click', e =>{
-//     e.preventDefault();
-//     let id ;
-//     console.log('hola');
-//     // console.log(tituloProd.innerHTML);
-//     // fetch('/api/cart', {
-//     //     method:'POST',
-//     // }).then(result => result.json()).then(json =>{
-//     //     console.log(json);
-//     // })
-//     // fetch(`/api/cart/${}/products/${}`, {
-//     //     method:'POST',
-//     // }).then(result => result.json()).then(json =>{
-//     //     console.log(json);
-//     // })
-// })
 
 logout.addEventListener('click', e =>{
     e.preventDefault()

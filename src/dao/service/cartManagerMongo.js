@@ -25,6 +25,9 @@ export class CartManagerMongo {
         } catch (error) {
             if(error) console.log('error al obtener los carritos ' + error);
         }
+    }
 
+    async cartPopulate(id) {
+        return cartRepository.getPopulate(id)
     }
 }

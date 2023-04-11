@@ -4,6 +4,8 @@ import multer from 'multer';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import passport from 'passport'
+import config from './config/config.js';
+import nodemailer from 'nodemailer'
 
 const PRIVATE_KEY = 'KeyParaJWT'
 
@@ -34,6 +36,31 @@ export const authToken = (req, res, next)=>{
     })
 }
 
+export const isAdmin = async (req, res, next) => {
+    if(req.session.user.admin === true) {
+        return next();
+    } else {
+        res.render('sinPermisos')
+    }
+}
+
+export const notAdmin = async(req, res, next) => {
+    if(req.session.user.admin !== true) {
+        return next();
+    } else {
+        return res.status(400).send({status: 'error', error:'No tienes los permisos para realizar esta accion'})
+    }
+}
+
+export const transporte = nodemailer.createTransport({
+    service:'gmail',
+    port:587,
+    auth:{
+        user:config.userNodemailer,
+        pass:config.passNodemailer
+    }
+})
+
 
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 export const isValidPassword = (user, password) => bcrypt.compareSync(password, user.password)
@@ -53,4 +80,3 @@ export const uploader = multer({storage,onError:function(err,next){
     next();
 }});
 export const __dirname = dirname(__filename);
-

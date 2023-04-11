@@ -14,7 +14,7 @@ import passport from 'passport'
 import initPassport from './config/passport.config.js'
 import config from './config/config.js'
 import cookieParser from 'cookie-parser'
-
+import cors from 'cors'
 
 
 const app = express()
@@ -42,6 +42,7 @@ app.use(cookieParser('CoderS3cR3tC0D3'))
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use(cors({origin:'http://localhost:3005',methods:['GET','POST','PUT']}))
 app.use('/static', express.static(__dirname +'/public'))
 app.use(express.static(path.join(__dirname, 'views')))
 app.use(express.static(__dirname+'/public'))
@@ -51,7 +52,9 @@ app.use('/api/cart/', cartRouter)
 app.use('/api/products/', productsRouter)
 app.use('/api/session/', sessionRouter)
 
+
 app.engine('handlebars', handlebars.engine())
+
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')

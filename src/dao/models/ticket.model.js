@@ -4,7 +4,7 @@ const ticketCollection = 'tickets'
 
 const ticketSchema = mongoose.Schema({
     code: String,
-    purchase_datetime: Date,
+    purchase_datetime: String,
     amount: Number,
     purchaser: String
 })

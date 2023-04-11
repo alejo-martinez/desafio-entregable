@@ -1,14 +1,15 @@
 <div class="containerProd">
-    {{#each listaProds}}
+    {{#each carritoDeProds}}
 
     <div class="product-card cardProd">
   <div class="product-card-thumbnail container-img">
-    <img src={{this.thumbnail}} />
+    <img src={{this.product.thumbnail}} />
   </div>
-  <span class="oculto">{{this._id}}</span>
-  <h2 class="product-card-title" id="titulo">{{this.title}}</h2>
-  <span class="product-card-desc">{{this.description}}</span>
-  <span class="product-card-price">${{this.price}}</span>
+  <span class="oculto">{{this.product.cartId}}</span>
+  <h2 class="product-card-title" id="titulo">{{this.product.title}}</h2>
+  <span class="product-card-desc">{{this.product.description}}</span>
+  <span class="product-card-price">${{this.product.price}}</span>
+  <span>Cantidad: {{this.quantity}}</span>
   
     {{/each}}
 

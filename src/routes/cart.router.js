@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {__dirname} from '../utils.js'
+import {__dirname, notAdmin} from '../utils.js'
 import { createCart, getCartId, addProductInCart, getCarts, updateCart, updateProductInCart, deleteCart, deleteProductInCart, endPurchase } from "../controllers/cart.controller.js";
 
 const router = Router()
@@ -13,7 +13,7 @@ router.get('/:cid', getCartId)
 
 router.post('/:cid/purchase', endPurchase)
 
-router.post('/:cid/products/:pid', addProductInCart)
+router.post('/:cid/products/:pid', notAdmin, addProductInCart)
 
 router.put('/:cid', updateCart)
 

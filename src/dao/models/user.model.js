@@ -18,7 +18,9 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String
     },
-    rol: String
+    admin: {
+        type: Boolean
+    }
 })
 
 export const userModel = mongoose.model(userCollection, userSchema)

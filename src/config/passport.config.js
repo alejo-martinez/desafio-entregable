@@ -38,7 +38,7 @@ const initPassport = ()=>{
                 let user = await userModel.findOne({email: username})
                 if (user) {
                     console.log('usuario ya existe ');
-                    return done(null, false)
+                    return done(null, false) 
                 } else{
                     const result = new UserDTO({name, last_name, email, password})
                     let newUser = await userModel.create(result)
@@ -99,7 +99,7 @@ const initPassport = ()=>{
                     name: profile._json.name,
                     last_name: "",
                     email: profile._json.email,
-                    password:''
+                    admin: false
                 }
                 let result = await userModel.create(newUser)
                 done(null, result)
