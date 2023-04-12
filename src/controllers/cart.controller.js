@@ -1,10 +1,7 @@
 import {CartManagerMongo} from '../dao/service/cartManagerMongo.js'
-
 import { userRegistered } from './session.controller.js';
-
 import { cartRepository, productRepository, ticketRepository } from '../repository/index.js';
-
-import { transporte } from '../utils.js';
+import { transporte, generateCode } from '../utils.js';
 
 const cm = new CartManagerMongo()
 
@@ -147,10 +144,6 @@ export const deleteProductInCart = async(req, res)=>{
 }
 
 
-
-function generateCode() {
-    return Math.random() * (99999 - 1) + 1;
-  }
 
 export const endPurchase = async (req, res)=>{
     try {

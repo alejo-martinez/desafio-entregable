@@ -6,6 +6,9 @@ import jwt from 'jsonwebtoken'
 import passport from 'passport'
 import config from './config/config.js';
 import nodemailer from 'nodemailer'
+import { faker } from '@faker-js/faker';
+
+faker.locale = 'es';
 
 const PRIVATE_KEY = 'KeyParaJWT'
 
@@ -36,6 +39,10 @@ export const authToken = (req, res, next)=>{
     })
 }
 
+export const generateCode = ()=> {
+    return Math.random() * (99999 - 1) + 1;
+  }
+
 export const isAdmin = async (req, res, next) => {
     if(req.session.user.admin === true) {
         return next();
@@ -60,6 +67,15 @@ export const transporte = nodemailer.createTransport({
         pass:config.passNodemailer
     }
 })
+
+export const generateProducts = () =>{
+    let numProductos = parseInt(faker.random.numeric(3,{bannedDigits:['0']}))
+    let productos = []
+    for(let i=0; i<numProductos ;i++){
+        productos.push({title: faker.commerce.productName(), description: faker.commerce.productDescription(), price: faker.commerce.price(), thumbnail: faker.image.image(), code: generateCode(), stock: faker.commerce.price(1, 50, 0), status: true, _id: faker.database.mongodbObjectId()});
+     }
+    return productos;
+}
 
 
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10))

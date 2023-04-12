@@ -1,6 +1,6 @@
 import {Router} from 'express'
 import { ProductManagerMongo } from '../dao/service/productManagerMongo.js'
-import { administer, login, realTimeProducts, register, renderCartId, renderProducts } from '../controllers/views.controller.js'
+import { administer, login, mockingproducts, realTimeProducts, register, renderCartId, renderProducts } from '../controllers/views.controller.js'
 import { isAdmin } from '../utils.js'
 
 const pm = new ProductManagerMongo()
@@ -17,6 +17,8 @@ router.get('/products', renderProducts)
 router.get('/carts/:cid', renderCartId)
 
 router.get('/administrar', isAdmin, administer)
+
+router.get('/mockingproducts', mockingproducts)
 
 
 export default router

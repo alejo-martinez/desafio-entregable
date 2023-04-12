@@ -4,6 +4,7 @@ import { cartModel } from '../dao/models/cart.model.js'
 import { userRegistered } from './session.controller.js'
 import { CartManagerMongo } from '../dao/service/cartManagerMongo.js'
 import { cartRepository } from '../repository/index.js'
+import { generateProducts } from '../utils.js'
 
 const pm = new ProductManagerMongo();
 const cm = new CartManagerMongo();
@@ -68,4 +69,9 @@ export const renderCartId = async(req, res)=>{
 
 export const administer = async(req, res)=>{
         res.render('administrar')
+}
+
+export const mockingproducts = async(req, res)=>{
+    let productos = generateProducts()
+    res.render('mockingproducts', {productos})
 }

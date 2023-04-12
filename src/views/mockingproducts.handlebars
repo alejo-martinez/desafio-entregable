@@ -1,0 +1,19 @@
+<div class="containerProd">
+{{#each productos}}
+    <div class="product-card cardProd" style="width: 300px;">
+  <div class="product-card-thumbnail container-img">
+    <img src={{this.thumbnail}} />
+  </div>
+  <span class="oculto">{{this._id}}</span>
+  <h2 class="product-card-title" id="titulo">{{this.title}}</h2>
+  <span class="product-card-desc">{{this.description}}</span>
+  <span class="product-card-price">${{this.price}}</span>
+  <br>
+  <span class="product-card-price">Stock: {{this.stock}}</span>
+  <br>
+  <button class="button-hover-addcart button agregarCarritoC" id="agregarCarrito" onclick="addCarrito('{{this._id}}')"><span>Add</span><i class="fa fa-shopping-cart"></i></button>
+
+</div>
+
+    {{/each}}
+</div>

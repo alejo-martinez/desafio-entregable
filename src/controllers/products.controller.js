@@ -3,6 +3,9 @@ import { ProductManagerMongo } from "../dao/service/productManagerMongo.js";
 import { productModel } from "../dao/models/product.model.js";
 import { productRepository } from "../repository/index.js";
 import ProductDTO from "../dao/DTOs/product.dto.js";
+import customError from "../errors/customError.js";
+import { generateProductError } from "../errors/infoError.js";
+import typeError from "../errors/typeError.js";
 
 const pm = new ProductManagerMongo()
 
@@ -121,14 +124,22 @@ export const createProduct = async (req, res)=>{
     let precio = req.body.price
     let codigo = req.body.code
     let cantidad = req.body.stock
-    let nombreImg = req.file.filename
+    // let nombreImg = req.file.filename
 
-    let ruta = `http://localhost:3005/images/${nombreImg}` 
-    if (!req.file) {
-        return res.status(400).send({status:"error",error:"La imagen no pudo ser guardada"})
-    }
+    // let ruta = `http://localhost:3005/images/${nombreImg}`
+    let ruta = 'kasjhdaksjas' 
+    // if (!req.file) {
+
+    //     return res.status(400).send({status:"error",error:"La imagen no pudo ser guardada"})
+    // }
     if (!titulo || !descripcion || !precio || !codigo || !cantidad) {
-        res.send('Error, debes completar todos los campos')
+        customError.createError({
+            name: 'Error en la creación del producto',
+            cause: generateProductError({titulo, descripcion, precio, codigo, cantidad}),
+            message: 'Fallo en la creación del producto',
+            code: typeError.INVALID_TYPES_ERROR
+        })
+        // res.send('Error, debes completar todos los campos')
     } else{
         let producto = new ProductDTO(titulo, descripcion, precio, ruta, codigo, cantidad)
         let prod = await productRepository.createProduct(producto)
@@ -138,7 +149,7 @@ export const createProduct = async (req, res)=>{
     }
     catch (error) {
         if (error) {
-            console.log('error al crear el producto' + error);
+            res.send('error al crear el producto ' + error + ' ' + error.cause);
         }
     } 
 }

@@ -15,7 +15,7 @@ import initPassport from './config/passport.config.js'
 import config from './config/config.js'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-
+import errors from './errors/middlewares/errors/index.js'
 
 const app = express()
 const httpServer = app.listen(parseFloat(config.port), ()=>{
@@ -51,7 +51,7 @@ app.use('/', viewsRouter)
 app.use('/api/cart/', cartRouter)
 app.use('/api/products/', productsRouter)
 app.use('/api/session/', sessionRouter)
-
+app.use(errors)
 
 app.engine('handlebars', handlebars.engine())
 
