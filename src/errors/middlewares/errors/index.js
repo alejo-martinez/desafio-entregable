@@ -8,6 +8,7 @@ export default (error, req, res, next) =>{
             break;
     
         default:
+            // req.logger.fatal('Fatal error')
             res.send({status:"error", error:"Error desconocido"})
             break;
     }

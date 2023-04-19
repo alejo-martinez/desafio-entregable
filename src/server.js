@@ -16,6 +16,7 @@ import config from './config/config.js'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import errors from './errors/middlewares/errors/index.js'
+import { addLogger } from './logger.js'
 
 const app = express()
 const httpServer = app.listen(parseFloat(config.port), ()=>{
@@ -23,6 +24,7 @@ const httpServer = app.listen(parseFloat(config.port), ()=>{
 })
 export const io = new Server(httpServer)
 
+app.use(addLogger)
 
 app.use(session({
     store:MongoStore.create({

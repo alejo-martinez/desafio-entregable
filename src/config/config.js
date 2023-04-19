@@ -8,5 +8,6 @@ export default {
     adminEmail: process.env.ADMIN_NAME,
     adminPass: process.env.ADMIN_PASSWORD,
     userNodemailer : process.env.USER_MAIL,
-    passNodemailer : process.env.PASS_MAIL
+    passNodemailer : process.env.PASS_MAIL,
+    mode : process.argv.slice(2)
 }

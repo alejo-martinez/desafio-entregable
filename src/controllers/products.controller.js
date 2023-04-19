@@ -96,7 +96,7 @@ export const getProducts = async (req, res)=>{
         
     } catch (error) {
         if (error) {
-            console.log('error al leer los productos' + error);
+            req.logger.error('error al leer los productos' + error);
         }
     }
 }
@@ -112,7 +112,7 @@ export const getProductId = async (req, res)=>{
         }
     } catch (error) {
         if (error) {
-            console.log('error al buscar el archivo especificado' + error);
+            req.logger.error('error al buscar el archivo especificado' + error);
         }
     }
 }
@@ -124,14 +124,14 @@ export const createProduct = async (req, res)=>{
     let precio = req.body.price
     let codigo = req.body.code
     let cantidad = req.body.stock
-    // let nombreImg = req.file.filename
+    let nombreImg = req.file.filename
 
-    // let ruta = `http://localhost:3005/images/${nombreImg}`
-    let ruta = 'kasjhdaksjas' 
-    // if (!req.file) {
+    let ruta = `http://localhost:3005/images/${nombreImg}`
 
-    //     return res.status(400).send({status:"error",error:"La imagen no pudo ser guardada"})
-    // }
+    if (!req.file) {
+        req.logger.error('Error en la carga de la imagen')
+        return res.status(400).send({status:"error",error:"La imagen no pudo ser guardada"})
+    }
     if (!titulo || !descripcion || !precio || !codigo || !cantidad) {
         customError.createError({
             name: 'Error en la creación del producto',
@@ -149,7 +149,7 @@ export const createProduct = async (req, res)=>{
     }
     catch (error) {
         if (error) {
-            res.send('error al crear el producto ' + error + ' ' + error.cause);
+            req.logger.error('error al crear el producto ' + error + ' ' + error.cause);
         }
     } 
 }
@@ -163,7 +163,7 @@ export const updateProductById = async (req, res)=>{
         res.send({status: 'succes'})
     } catch (error) {
         if (error) {
-            console.log('error al actualizar el producto' + error);
+            req.logger.error('error al actualizar el producto' + error);
         }
     }
 }
@@ -175,7 +175,7 @@ export const deleteProductById = async (req, res)=>{
         res.send({status: 'succes'})
     } catch (error) {
         if (error) {
-            console.log('error al borrar el producto' + error);
+            req.logger.error('error al borrar el producto' + error);
         }
     }
 }

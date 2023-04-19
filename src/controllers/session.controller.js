@@ -17,7 +17,7 @@ export const createUser = async(req, res)=>{
 }
 
 export const failRegister = async(req, res)=>{
-    console.log('fallo la estrategia');
+    req.logger.fatal('fallo la estrategia');
     res.send({error: 'Failed'})
 }
 
@@ -60,18 +60,21 @@ export const userLogin = async(req, res)=>{
         }
     }
     } catch (error) {
-        if(error) console.log('error al intentar iniciar sesion ' + error);
+        if(error) req.logger.error('error al intentar iniciar sesion ' + error);
     }
 }
 
 export const failLogin = async(req, res)=>{
-    console.log('fallo la estrategia');
+    req.logger.fatal('fallo la estrategia');
     res.send({error: 'Failed'})
 }
 
 export const logOut = async (req, res)=>{
     req.session.destroy(error =>{
-        if(error) res.send({status:'error', message: 'no pudimos cerrar la sesion'})
+        if(error) {
+            req.logger.error('Error al cerrar la sesion')
+         res.send({status:'error', message: 'no pudimos cerrar la sesion'})
+        }
         else res.clearCookie('accesToken').send({status: 'succes', message: 'sesion cerrada con exito'})
     })
     userRegistered = ""

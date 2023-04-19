@@ -16,7 +16,7 @@ export const getCarts = async (req, res)=>{
         res.send(carritos)
     } catch (error) {
         if (error) {
-            console.log('error al mostrar los carritos ' + error);
+            req.logger.error('error al mostrar los carritos ' + error);
         }
     }
 }
@@ -32,7 +32,7 @@ export const getCartId = async(req, res) =>{
         }
     } catch (error) {
         if (error) {
-            console.log('error al buscar el carrito solicitado ' + error);
+            req.logger.error('error al buscar el carrito solicitado ' + error);
         }
     }
 }
@@ -56,7 +56,7 @@ export const updateCart = async(req,res)=>{
 
         res.send({status: 'array update!'})
         } catch (error) {
-            if(error) console.log('error al actualizar el array de productos ' + error);       
+            if(error) req.logger.error('error al actualizar el array de productos ' + error);       
         }
 }
 
@@ -71,7 +71,7 @@ export const addProductInCart = async (req, res) =>{
         let duplicado = carritoBuscado.products.find(prod => prod.product == pid)
         
         if (!carritoBuscado) {
-            res.send('Error, el carrito que estas buscando no existe')
+            req.logger.fatal('Error, el carrito que estas buscando no existe')
             
         } else if(duplicado){
             let cantidadProdDuplicado = duplicado.quantity
@@ -94,7 +94,7 @@ export const addProductInCart = async (req, res) =>{
     }
     } catch (error) {
         if (error) {
-            console.log('error al hacer el post del producto en el carrito ' + error);
+            req.logger.error('error al hacer el post del producto en el carrito ' + error);
         }
     }
 }
@@ -114,7 +114,7 @@ export const updateProductInCart = async(req, res)=>{
 
     res.send({status: 'quantity updated'})
 } catch (error) {
-        if(error) console.log('error al actualizar la cantidad ' + error);
+        if(error) req.logger.error('error al actualizar la cantidad ' + error);
 }
 }
 
@@ -125,7 +125,7 @@ export const deleteCart = async(req, res)=>{
 
         res.send({status: 'cart empty!'})
     } catch (error) {
-        if(error) console.log('no se pudieron eliminar los productos del carrito ' + error);
+        if(error) req.logger.error('no se pudieron eliminar los productos del carrito ' + error);
     }
 }
 
@@ -139,7 +139,7 @@ export const deleteProductInCart = async(req, res)=>{
 
         res.send({status: 'succes'})
     } catch (error) {
-        if (error) console.log('error al borrar el producto del carrito ' + error) 
+        if (error) req.logger.error('error al borrar el producto del carrito ' + error) 
     }
 }
 
@@ -184,6 +184,6 @@ export const endPurchase = async (req, res)=>{
         }
 
     } catch (error) {
-        if(error) console.log('error al terminar la compra ' + error);
+        if(error) req.logger.error('error al terminar la compra ' + error);
     }
 }

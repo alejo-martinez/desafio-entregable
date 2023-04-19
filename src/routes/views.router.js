@@ -20,5 +20,15 @@ router.get('/administrar', isAdmin, administer)
 
 router.get('/mockingproducts', mockingproducts)
 
+router.get('/loggerTest', (req, res)=>{
+    req.logger.debug('debug')
+    req.logger.http('http')
+    req.logger.info('info')
+    req.logger.warning('warning')
+    req.logger.error('error')
+    req.logger.fatal('fatal')
+    res.send({status: 'succes', message: 'probando logger'})
+})
+
 
 export default router

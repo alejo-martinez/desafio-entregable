@@ -1,6 +1,5 @@
 import { ProductManagerMongo } from '../dao/service/productManagerMongo.js'
 import { productModel } from '../dao/models/product.model.js'
-import { cartModel } from '../dao/models/cart.model.js'
 import { userRegistered } from './session.controller.js'
 import { CartManagerMongo } from '../dao/service/cartManagerMongo.js'
 import { cartRepository } from '../repository/index.js'
