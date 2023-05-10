@@ -8,7 +8,7 @@ const router = Router();
 router.get('/', getProducts)
 
 router.get('/:pid', getProductId)
-
+ 
 router.post('/', uploader.single('file'), createProduct)
 
 router.put('/:pid', updateProductById)

@@ -18,12 +18,16 @@ router.get('/failregister', failRegister)
 
 router.post('/login',passport.authenticate('login', {failureRedirect:'/faillogin'}), userLogin)
 
+// router.post('/updatepass', updatePass)
+
 router.get('/faillogin', failLogin)
 
 router.delete('/login', logOut)
 
-router.get('/current', strategyPassport('jwt'), (req,res)=>{
-    res.send(req.user);
-})
+// router.delete('/resetpass/:email', passReset)
+
+// router.get('/current', strategyPassport('jwt'), (req,res)=>{
+//     res.send(req.user);
+// })
 
 export default router

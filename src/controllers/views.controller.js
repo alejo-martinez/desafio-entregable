@@ -74,3 +74,11 @@ export const mockingproducts = async(req, res)=>{
     let productos = generateProducts()
     res.render('mockingproducts', {productos})
 }
+
+export const enviarMail = async(req, res) =>{
+    res.render('enviarmail')
+}
+
+export const passwordReset = async (req, res) =>{
+        res.render('cambiopass')
+}

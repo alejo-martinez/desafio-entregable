@@ -1,0 +1,155 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtener los productos
+      tags:
+        -Products
+      responses:
+        "200":
+          description: Los productos se obtuvieron correctamente
+        "500":
+          description: Error al obtener los productos de la base de datos
+    post:
+      summary: Crear productos
+      tags:
+        -Products
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: ObjectId
+                  description: Id autogenerado del producto
+                title:
+                  type: String
+                  description: Titulo del producto
+                description:      
+                  type: String
+                  description: Descripcion del producto
+                price:
+                  type: Number
+                  description: Precio del producto
+                thumbnail:
+                  type: string
+                  format: binary
+                  description: Imagen del producto
+                code:
+                  type: String
+                  description: Codigo autogenerado del producto
+                stock:
+                  type: Number
+                  description: Cantidad del producto
+                status:
+                  type: Boolean
+                  description: Estado del producto
+      responses:
+        "200":
+          description: El producto se creo correctamente
+        "400":
+          description: Error al crear el producto por parte del usuario
+        "500":
+          description: Error al crear el producto en la base de datos
+  /api/products/{pid}:
+    get:
+      summary: Obtener un producto especifico por su id
+      tags:
+        -Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: El id del producto
+      responses:
+        "200": 
+          description: El producto se obtuvo correctamente
+        "500":
+          description: Error al obtener el producto desde la base de datos
+    put:
+      summary: Actualizar un producto
+      tags:
+        -Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: El id del producto
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                campo: 
+                  type: String
+                  description: campo a actualizar
+                valor: 
+                  type: String
+                  description: valor a actualizar
+
+      responses:
+        "200":
+          description: El producto se actualizo correctamente
+        "500":
+          description: Error al actualizar el producto en la base de datos
+    delete:
+      summary: Eliminar un producto
+      tags:
+        -Products
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: Id del producto
+      responses:
+        "200":
+          description: El producto se elimino correctamente
+        "500":
+          description: Error al eliminar el producto en la base de datos
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado del producto
+        title:
+          type: String
+          description: Titulo del producto
+        description:
+          type: String
+          description: Descripcion del producto
+        price:
+          type: Number
+          description: Precio del producto
+        thumbnail:
+          type: String
+          description: Imagen del producto
+        code:
+          type: String
+          description: Codigo autogenerado del producto
+        stock:
+          type: Number
+          description: Cantidad del producto
+        status:
+          type: Boolean
+          description: Estado del producto
+      example:
+        _id: ObjectId("1as56fa5s41fa69s5fas6f5as1")
+        title: Producto title
+        description: Producto description
+        price: 1000
+        thumbnail: http://localhost:3005/images/nombreImagen
+        code: fa6s5f4
+        stock: 5
+        status: true

@@ -18,8 +18,8 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String
     },
-    admin: {
-        type: Boolean
+    rol: {
+        type: String
     }
 })
 

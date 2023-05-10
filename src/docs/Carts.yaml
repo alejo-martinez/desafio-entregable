@@ -1,0 +1,204 @@
+paths:
+  /api/cart:
+    get:
+      summary: Obtener los carritos
+      tags:
+        -Cart
+      responses:
+        "200":
+          description: Los carritos se obtuvieron correctamente
+        "500":
+          description: Error al traer los carritos desde la base de datos
+    post:
+      summary: Crear un carrito
+      tags:
+        -Cart
+      responses:
+        "200":
+          description: El carrito se creo con exito
+        "500":
+          description: Error al crear el carrito en la base de datos
+  /api/cart/{cid}:
+    get:
+      summary: Obtener un carrito por su id
+      tags:
+        -Cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            type: string
+          description: Id del carrito
+      responses:
+        "200":
+          description: El carrito se obtuvo correctamente
+        "400":
+          description: Error al ingresar los datos del carrito buscado
+        "500":
+          description: Error al traer el carrito
+    put:
+      summary: Actualizar el carrito
+      tags:
+       -Cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            type: string
+          description: Id del carrito
+      requestBody:
+        description: Array actualizado del carrito
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: ObjectId
+                  description: Id autogenerado del carrito
+                products:
+                  type: array
+                  description: Array de los productos
+                  items:
+                    $ref: "#/components/schemas/Product"
+        responses:
+          "200":
+            description: Carrito actualizado con exito
+          "400":
+            description: Error en el ingreso de los datos actualizados por el usuario
+          "500":
+            description: Error al actualizar los carritos en la base de datos
+    delete:
+      summary: Borrar un carrito
+      tags:
+        -Cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            type: string
+          description: Id del carrito
+      responses:
+        "200":
+          description: Carrito borrado con exito
+        "400":
+          description: Error en el ingreso de los datos para borrar el carrito
+        "500":
+          description: Error al borrar el carrito en la base de datos
+  /api/cart/{cid}/purchase:
+    post:
+      summary: Terminar la compra de un carrito
+      tags:
+        -Cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            type: string
+          description: Id del carrito
+      responses:
+        "200":
+          description: Compra terminada con exito
+  /api/cart/{cid}/products/{pid}:
+    post:
+      summary: Agregar un producto al carrito especifico
+      tags:
+        -Cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            type: string
+          description: id del carrito
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: id del producto
+      responses:
+        "200":
+          description: producto agregado con exito
+        "500":
+          description: error al agregar el producto al carrito en la base de datos
+    put:
+      summary: Actualiza la cantidad de productos agregados al carrito
+      tags:
+        -Cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            type: string
+          description: id del carrito
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: id del producto
+      responses:
+        "200":
+          description: cantidad actualizada con exito
+        "500":
+          description: Error al actualizar el carrito en la base de datos
+    delete:
+      summary: borrar un producto del carrito
+      tags:
+        -Cart
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            type: string
+          description: id del carrito
+        - in: path
+          name: pid
+          required: true
+          schema:
+            type: string
+          description: id del producto
+      responses:
+        "200":
+          description: Producto borrado con exito del carrito
+        "500":
+          description: Error al borrar el producto del carrito en la base de datos
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: id del carrito
+        products:
+          type: Array
+          description: array de productos
+          items:
+            $ref: "#/components/schemas/Product"
+      example:
+        _id: fjhas0f9a8s7fgag9asd8y
+        products: [{_id: 49fas84gas98a9ds8g74, quantity: 5}]
+    Product:
+      type: object
+      properties:
+        product:
+          type: ObjectId
+          description: id del producto
+        quantity:
+          type: Number
+          description: cantidad del producto seleccionado
+      example: 
+        product: 8a4sf9as8f4as98f
+        quantity: 4
+
+      
+      

@@ -18,11 +18,28 @@ import cors from 'cors'
 import errors from './errors/middlewares/errors/index.js'
 import { addLogger } from './logger.js'
 
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
+
 const app = express()
 const httpServer = app.listen(parseFloat(config.port), ()=>{
     console.log('server iniciado');
 })
 export const io = new Server(httpServer)
+
+const swaggerOptions = {
+    definition: {
+        openapi:'3.0.1',
+        info:{
+            title:'Documentacion de las APIs',
+            description:'APIs del e-commerce'
+        }
+    },
+    apis:[`./docs/**.yaml`]
+}
+
+const specs = swaggerJsdoc(swaggerOptions);
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 app.use(addLogger)
 

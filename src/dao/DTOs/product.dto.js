@@ -3,7 +3,7 @@ export default class ProductDTO {
         this.title = titulo;
         this.description = descripcion;
         this.price = precio;
-        this.thumbnail = thumbnail;
+        this.thumbnail = thumbnail || 'sin imagen';
         this.code = codigo;
         this.stock = stock;
         this.status = true;

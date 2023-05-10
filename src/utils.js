@@ -7,10 +7,12 @@ import passport from 'passport'
 import config from './config/config.js';
 import nodemailer from 'nodemailer'
 import { faker } from '@faker-js/faker';
+// import { expired, obj } from './controllers/session.controller.js';
 
 faker.locale = 'es';
 
 const PRIVATE_KEY = 'KeyParaJWT'
+const date = new Date()
 
 export const strategyPassport = (strategy)=>{
     return async(req, res, next) =>{
@@ -39,12 +41,29 @@ export const authToken = (req, res, next)=>{
     })
 }
 
+// export const userPremium = async(req, res, next) =>{
+//     if(req.session.user.rol === 'premium'){
+//         return next()
+//     } else{
+//         return res.send({status:'error', error:'no tienes los permisos para esta accion'})
+//     }
+// }
+
+// export const linkExpired = async(req, res, next) =>{
+//     let timeActual =`${date.getHours()}:${date.getMinutes()}`
+//     if (timeActual === obj.horaExpired) {
+//         res.render('sinPermisos')
+//     } else{
+//         return next()
+//     }
+// }
+
 export const generateCode = ()=> {
     return Math.random() * (99999 - 1) + 1;
   }
 
 export const isAdmin = async (req, res, next) => {
-    if(req.session.user.admin === true) {
+    if(req.session.user.rol === 'admin') {
         return next();
     } else {
         res.render('sinPermisos')
@@ -80,7 +99,7 @@ export const generateProducts = () =>{
 
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 export const isValidPassword = (user, password) => bcrypt.compareSync(password, user.password)
-
+ 
 const __filename = fileURLToPath(import.meta.url);
 const storage = multer.diskStorage({
     destination: function(req,file,cb){

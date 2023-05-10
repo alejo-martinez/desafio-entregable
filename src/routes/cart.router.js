@@ -4,22 +4,22 @@ import { createCart, getCartId, addProductInCart, getCarts, updateCart, updatePr
 
 const router = Router()
 
-
+ 
 router.post('/', createCart)
 
 router.get('/', getCarts)
 
 router.get('/:cid', getCartId)
 
+router.put('/:cid', updateCart)
+
+router.delete('/:cid', deleteCart)
+
 router.post('/:cid/purchase', endPurchase)
 
 router.post('/:cid/products/:pid', notAdmin, addProductInCart)
 
-router.put('/:cid', updateCart)
-
 router.put('/:cid/products/:pid', updateProductInCart)
-
-router.delete('/:cid', deleteCart)
 
 router.delete('/:cid/products/:pid', deleteProductInCart)
 

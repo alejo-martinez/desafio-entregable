@@ -30,5 +30,8 @@ router.get('/loggerTest', (req, res)=>{
     res.send({status: 'succes', message: 'probando logger'})
 })
 
+// router.get('/resetpassword', enviarMail)
+
+// router.get('/cambiopassword', linkExpired ,passwordReset)
 
 export default router

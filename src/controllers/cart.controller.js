@@ -178,7 +178,7 @@ export const endPurchase = async (req, res)=>{
                 <span>Su compra por $${ticket.amount}, se efectuo el ${ticket.purchase_datetime}. Su código es ${ticket.code}</span>
                 </div>`
             })
-    
+     
             prodValidos = []
             res.send({status:'succes'})
         }
