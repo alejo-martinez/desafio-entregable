@@ -38,14 +38,21 @@ img {
 }
 
 .nav {
-    background-color: #305050;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  background-color: #305050;
 }
 
 .nav-user {
     display: flex;
     flex-flow: column nowrap;
     width: max-content;
-    margin-left: 5px;
+    margin-left: 5rem;
+}
+
+.btn-inicio {
+  margin-left: 2rem;
 }
 
 .btn-logout {
@@ -274,4 +281,26 @@ img {
     right: 12px;
   }
   
-    
+  .hide {
+    display: none;
+  }
+
+.container-crear-prod {
+  justify-content: center;
+  /* align-items: center; */
+
+}
+
+.form-create {
+  display: flex;
+  flex-flow: column nowrap;
+  color: white;
+  width: fit-content;
+  text-align: center;
+  margin: auto;
+}
+
+.cart-container {
+  display: flex;
+  flex-flow: column wrap;
+}

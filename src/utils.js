@@ -7,12 +7,15 @@ import passport from 'passport'
 import config from './config/config.js';
 import nodemailer from 'nodemailer'
 import { faker } from '@faker-js/faker';
+import { userRegistered } from './controllers/session.controller.js';
+import { productRepository } from './repository/index.js';
+import { userModel } from './dao/models/user.model.js';
 // import { expired, obj } from './controllers/session.controller.js';
 
 faker.locale = 'es';
 
 const PRIVATE_KEY = 'KeyParaJWT'
-const date = new Date()
+// const date = new Date()
 
 export const strategyPassport = (strategy)=>{
     return async(req, res, next) =>{
@@ -41,13 +44,15 @@ export const authToken = (req, res, next)=>{
     })
 }
 
-// export const userPremium = async(req, res, next) =>{
-//     if(req.session.user.rol === 'premium'){
-//         return next()
-//     } else{
-//         return res.send({status:'error', error:'no tienes los permisos para esta accion'})
-//     }
-// }
+
+export const userPremium = async(req, res, next) =>{
+    if(userRegistered.rol === 'premium'){
+        console.log(req.session.user);
+        return next()
+    } else{
+        return res.send({status:'error', error:'no tienes los permisos para esta accion'})
+    }
+}
 
 // export const linkExpired = async(req, res, next) =>{
 //     let timeActual =`${date.getHours()}:${date.getMinutes()}`
@@ -62,16 +67,33 @@ export const generateCode = ()=> {
     return Math.random() * (99999 - 1) + 1;
   }
 
-export const isAdmin = async (req, res, next) => {
-    if(req.session.user.rol === 'admin') {
-        return next();
-    } else {
+export const standarUser = async(req, res, next)=>{
+    if(req.user){
+        if(req.user.rol !== 'user') next()
+        else res.send('No tienes los permisos')
+    } else{
         res.render('sinPermisos')
     }
+    // if(userRegistered.rol !== 'user') next();
+    // else res.render('sinPermisos')
+}
+
+export const isAdmin = async (req, res, next) => {
+    if(req.user){
+        if(req.user.rol === 'admin') next()
+        else res.send('No tienes los permisos')
+    } else{
+        res.render('sinPermisos')
+    }
+    // if(userRegistered.rol === 'admin') {
+    //     return next();
+    // } else {
+    //     res.render('sinPermisos')
+    // }
 }
 
 export const notAdmin = async(req, res, next) => {
-    if(req.session.user.admin !== true) {
+    if(req.user.rol !== 'admin') {
         return next();
     } else {
         return res.status(400).send({status: 'error', error:'No tienes los permisos para realizar esta accion'})
@@ -82,8 +104,8 @@ export const transporte = nodemailer.createTransport({
     service:'gmail',
     port:587,
     auth:{
-        user:config.userNodemailer,
-        pass:config.passNodemailer
+        user:config.userNodemailer || 'alejoomartinex11@gmail.com',
+        pass:config.passNodemailer || 'lxhzkdgddtbrzwmn'
     }
 })
 
@@ -115,3 +137,18 @@ export const uploader = multer({storage,onError:function(err,next){
     next();
 }});
 export const __dirname = dirname(__filename);
+
+export const premiumProd = async(id) =>{
+    let prod = await productRepository.getById(id)
+    if(prod.owner !== 'admin'){
+        let user = await userModel.findOne({email: prod.owner})
+        await transporte.sendMail({
+            from:'alejoomartinex11@gmail.com',
+            to:prod.owner,
+            subject:'Eliminacion de producto',
+            html:`<div><h1>Sr/a ${user.name}:</h1>
+            <span>Su producto "${prod.title}" fue eliminado. Disculpe las molestias</span>
+            </div>`
+        })
+    }
+}

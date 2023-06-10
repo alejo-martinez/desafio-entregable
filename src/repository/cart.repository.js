@@ -3,9 +3,8 @@ import { cartModel } from "../dao/models/cart.model.js";
 
 export default class CartRepository {
     async createCart () {
-        let cart = new CartDTO()
-        await cartModel.create(cart)
-        // return carrito;
+        let cart = new CartDTO();
+        return await cartModel.create(cart);
     }
 
     async getById (id) {
@@ -18,8 +17,6 @@ export default class CartRepository {
 
     async getPopulate (cid) {
         return await cartModel.find({_id: cid}).lean().populate('products.product')
-        // console.log(carts);
-        // return carts;
     }
 
     async updateProductsId (id, valor) {

@@ -1,6 +1,7 @@
 import express from 'express'
 import productsRouter from './routes/products.router.js'
 import cartRouter from './routes/cart.router.js'
+import userRouter from './routes/user.router.js'
 import {__dirname} from './utils.js'
 import handlebars from 'express-handlebars'
 import path from 'path'
@@ -18,11 +19,14 @@ import cors from 'cors'
 import errors from './errors/middlewares/errors/index.js'
 import { addLogger } from './logger.js'
 
+
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
+import { userModel } from './dao/models/user.model.js'
 
 const app = express()
-const httpServer = app.listen(parseFloat(config.port), ()=>{
+
+const httpServer = app.listen(parseFloat(config.port) || 3005, ()=>{
     console.log('server iniciado');
 })
 export const io = new Server(httpServer)
@@ -45,7 +49,7 @@ app.use(addLogger)
 
 app.use(session({
     store:MongoStore.create({
-        mongoUrl:config.mongoURL,
+        mongoUrl:config.mongoURL || "mongodb+srv://AlejoM:cluster0selacome@ecommerce.wuolt09.mongodb.net/?retryWrites=true&w=majority",
         mongoOptions:{useNewUrlParser:true,useUnifiedTopology:true},
         ttl:20
     }),
@@ -70,23 +74,20 @@ app.use('/', viewsRouter)
 app.use('/api/cart/', cartRouter)
 app.use('/api/products/', productsRouter)
 app.use('/api/session/', sessionRouter)
+app.use('/api/users/', userRouter)
 app.use(errors)
 
-app.engine('handlebars', handlebars.engine())
-
+app.engine('handlebars', handlebars.engine());
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
 
 
-let mensajes = []
+let mensajes = [];
+let usuariosActualizados = [];
 io.on('connection', async (socket)=>{
     console.log('cliente conectado');
-    socket.on('mensaje', data =>{
-        mensajes.push(data)
-        io.emit('mensajesNuevos', mensajes)
-    })
 })
 
 mongoose.connect('mongodb+srv://AlejoM:cluster0selacome@ecommerce.wuolt09.mongodb.net/?retryWrites=true&w=majority', {

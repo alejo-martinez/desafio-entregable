@@ -1,7 +1,8 @@
 import {Router} from 'express'
 import { ProductManagerMongo } from '../dao/service/productManagerMongo.js'
-import { administer, login, mockingproducts, realTimeProducts, register, renderCartId, renderProducts } from '../controllers/views.controller.js'
-import { isAdmin } from '../utils.js'
+import { admUsers, administer, login, mockingproducts, realTimeProducts, register, renderCartId, renderProducts } from '../controllers/views.controller.js'
+import { isAdmin, standarUser } from '../utils.js'
+import passport from 'passport'
 
 const pm = new ProductManagerMongo()
 const router = Router()
@@ -12,11 +13,13 @@ router.get('/register', register)
 
 router.get('/realtimeproducts', realTimeProducts)
 
-router.get('/products', renderProducts)
+router.get('/prods', renderProducts)
 
-router.get('/carts/:cid', renderCartId)
+router.get('/products',passport.authenticate('jwt', {failureRedirect:'/prods'}),renderProducts)
 
-router.get('/administrar', isAdmin, administer)
+router.get('/carts/:cid', passport.authenticate('jwt'), renderCartId)
+
+router.get('/administrar', passport.authenticate('jwt'),standarUser, administer)
 
 router.get('/mockingproducts', mockingproducts)
 
@@ -29,6 +32,8 @@ router.get('/loggerTest', (req, res)=>{
     req.logger.fatal('fatal')
     res.send({status: 'succes', message: 'probando logger'})
 })
+
+router.get('/admusers', isAdmin, admUsers);
 
 // router.get('/resetpassword', enviarMail)
 

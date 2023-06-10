@@ -19,8 +19,18 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     rol: {
-        type: String
+        type: String,
+        default: 'user'
+    },
+    last_login: {
+        type: String,
+        default: 'no login'
+    },
+    carrito:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'cart'
     }
+
 })
 
 export const userModel = mongoose.model(userCollection, userSchema)

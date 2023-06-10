@@ -1,3 +1,16 @@
+<nav class="nav">
+      <div class="nav-inicio">
+        <button><a href="/products">INICIO</a></button>
+      </div>
+    <div class="nav-user">
+        <h4>Bienvenido {{user.name}}!</h4>
+        <h4>Tipo de usuario: {{user.rol}}</h4>
+        <button id="logout" class="btn-logout">Logout</button>
+    </div>
+</nav>
+
+<div class="cart-container">
+
 <div class="containerProd">
     {{#each carritoDeProds}}
 
@@ -10,11 +23,10 @@
   <span class="product-card-desc">{{this.product.description}}</span>
   <span class="product-card-price">${{this.product.price}}</span>
   <span>Cantidad: {{this.quantity}}</span>
+</div>
   
     {{/each}}
-
 </div>
-
-    <button id="finCompra">Finalizar compra</button>
-
+    <button style="width: fit-content; margin:auto; padding: 2px" id="finCompra">Finalizar compra</button>
+</div>
     <script src="/js/finalizarCompra.js"></script>

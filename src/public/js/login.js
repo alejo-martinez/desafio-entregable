@@ -13,10 +13,10 @@ formLogin.addEventListener('submit', e=>{
         body: JSON.stringify(objeto),
         headers:{
             'Content-type': 'application/json'
-        }
+        },
     }).then(result => result.json())
     .then(json=>{
         if(json.status === 'succes') window.location.replace('http://localhost:3005/products')
-        console.log(json)
+        else console.log(json);
     });
 })

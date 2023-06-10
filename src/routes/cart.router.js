@@ -1,11 +1,11 @@
 import { Router } from "express";
 import {__dirname, notAdmin} from '../utils.js'
 import { createCart, getCartId, addProductInCart, getCarts, updateCart, updateProductInCart, deleteCart, deleteProductInCart, endPurchase } from "../controllers/cart.controller.js";
+import passport from "passport";
 
 const router = Router()
-
  
-router.post('/', createCart)
+router.post('/',createCart) //admin no puede crearse un carrito
 
 router.get('/', getCarts)
 
@@ -17,7 +17,7 @@ router.delete('/:cid', deleteCart)
 
 router.post('/:cid/purchase', endPurchase)
 
-router.post('/:cid/products/:pid', notAdmin, addProductInCart)
+router.post('/:cid/products/:pid', passport.authenticate('jwt'),notAdmin, addProductInCart)
 
 router.put('/:cid/products/:pid', updateProductInCart)
 

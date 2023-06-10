@@ -1,19 +1,18 @@
-{{#if userRegistered}}
-
-
+{{#if admin}}
 <nav class="nav">
     <div class="nav-user">
-    <h4>Bienvenido {{userRegistered.name}}!</h4>
-    <h4>Admin: {{userRegistered.admin}}</h4>
-    <button id="logout" class="btn-logout">Logout</button>
-    <button id="goCarrito">Carrito</button>
-    <button><a href="/administrar">Administrar productos</a></button>
+        {{!-- <button style="display: none;"><a href="/">Iniciar sesion</a></button>
+        <button style="display: none;"><a href="/register">Registrarse</a></button> --}}
+        <h4>Bienvenido {{userRegistered.name}}!</h4>
+        <h4>Tipo de usuario: {{userRegistered.rol}}</h4>
+        <button id="logout" class="btn-logout">Logout</button>
+        <button><a href="/administrar">Crear productos</a></button>
+        {{!-- <button id="goCarrito" style="display: none;">Carrito</button> --}}
     </div>
 </nav>
 <div class="containerProd">
-    {{#each prods}}
-
-    <div class="product-card cardProd">
+{{#each prods}}
+<div class="product-card cardProd">
   <div class="product-card-thumbnail container-img">
     <img src={{this.thumbnail}} />
   </div>
@@ -24,31 +23,108 @@
   <br>
   <span class="product-card-price">Stock: {{this.stock}}</span>
   <br>
-  <button class="button-hover-addcart button agregarCarritoC" id="agregarCarrito" onclick="addCarrito('{{this._id}}')"><span>Add</span><i class="fa fa-shopping-cart"></i></button>
+
+    {{!-- <button style="display: none;" class="button-hover-addcart button agregarCarritoC" id="agregarCarrito" onclick="addCarrito('{{this._id}}')"><span>Add</span><i class="fa fa-shopping-cart"></i></button> --}}
 
 </div>
-    {{/each}}
-    <script src="/js/products.js"></script>
+{{/each}}
 </div>
-{{else}}
-<nav style="display: none">
-    <h4>Bienvenido {{email}} !</h4>
-    <button id="logout">Logout</button>
+    <script src="/js/productsadminuser.js"></script>
+        {{/if}}
+
+
+        {{#if premium}}
+  <nav class="nav">
+    <div class="nav-user">
+        {{!-- <button style="display: none;"><a href="/">Iniciar sesion</a></button>
+        <button style="display: none;"><a href="/register">Registrarse</a></button> --}}
+        <h4>Bienvenido {{userRegistered.name}}!</h4>
+        <h4>Tipo de usuario: {{userRegistered.rol}}</h4>
+        <button id="logout" class="btn-logout">Logout</button>
+        <button><a href="/administrar">Crear productos</a></button>
+        <button id="goCarrito">Carrito</button>
+        </div>
 </nav>
 <div class="containerProd">
-    {{#each prods}}
-
-    <div class="cardProd">
-    <h3>{{this.title}}</h3>
-    <p>{{this.description}}</p>
-    <p>Precio: ${{this.price}}</p>
-    <p>Stock: {{this.stock}}</p>
-
-    <button id="enviarData">Agregar al carrito</button>
-    </div>
-    {{/each}}
+{{#each prods}}
+<div class="product-card cardProd">
+  <div class="product-card-thumbnail container-img">
+    <img src={{this.thumbnail}} />
+  </div>
+  <span class="oculto">{{this._id}}</span>
+  <h2 class="product-card-title" id="titulo">{{this.title}}</h2>
+  <span class="product-card-desc">{{this.description}}</span>
+  <span class="product-card-price">${{this.price}}</span>
+  <br>
+  <span class="product-card-price">Stock: {{this.stock}}</span>
+  <br>
+    <button class="button-hover-addcart button agregarCarritoC" id="agregarCarrito" onclick="addCarrito('{{this._id}}, {{this.stock}}')"><span>Add</span><i class="fa fa-shopping-cart"></i></button>
+    <div id="prod{{this.title}}"></div>
 </div>
+{{/each}}
+</div>
+    <script src="/js/products.js"></script>
+        {{/if}}
 
 
-<script src="/js/products.js"></script>
-{{/if}}
+        {{#if standard}}
+        <nav class="nav">
+    <div class="nav-user">
+        <h4>Bienvenido {{userRegistered.name}}!</h4>
+        <h4>Tipo de usuario: {{userRegistered.rol}}</h4>
+        <button id="logout" class="btn-logout">Logout</button>
+        <button id="goCarrito">Carrito</button>
+        </div>
+</nav>
+<div class="containerProd">
+{{#each prods}}
+<div class="product-card cardProd">
+  <div class="product-card-thumbnail container-img">
+    <img src={{this.thumbnail}} />
+  </div>
+  <span class="oculto">{{this._id}}</span>
+  <h2 class="product-card-title" id="titulo">{{this.title}}</h2>
+  <span class="product-card-desc">{{this.description}}</span>
+  <span class="product-card-price">${{this.price}}</span>
+  <br>
+  <span class="product-card-price">Stock: {{this.stock}}</span>
+  <br>
+    <button class="button-hover-addcart button agregarCarritoC" id="agregarCarrito" onclick="addCarrito('{{this._id}}')"><span>Add</span><i class="fa fa-shopping-cart"></i></button>
+
+</div>
+{{/each}}
+</div>
+    <script src="/js/products.js"></script>
+        {{/if}}
+
+
+        {{#if sinUser}}
+        <nav class="nav">
+    <div class="nav-user">
+        <button><a href="/">Iniciar sesion</a></button>
+        <button><a href="/register">Registrarse</a></button>
+        </div>
+</nav>
+<div class="containerProd">
+{{#each prods}}
+<div class="product-card cardProd">
+  <div class="product-card-thumbnail container-img">
+    <img src={{this.thumbnail}} />
+  </div>
+  <span class="oculto">{{this._id}}</span>
+  <h2 class="product-card-title" id="titulo">{{this.title}}</h2>
+  <span class="product-card-desc">{{this.description}}</span>
+  <span class="product-card-price">${{this.price}}</span>
+  <br>
+  <span class="product-card-price">Stock: {{this.stock}}</span>
+  <br>
+</div>
+{{/each}}
+</div>
+    {{!-- <script src="/js/products.js"></script> --}}
+        {{/if}}
+        {{!-- <button><a href="/">Iniciar sesion</a></button>
+        <button><a href="/register">Registrarse</a></button>
+        <button id="goCarrito">Carrito</button> --}}
+
+

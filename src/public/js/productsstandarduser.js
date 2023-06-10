@@ -1,8 +1,7 @@
 const logout = document.getElementById('logout');
 const agregarCarrito = document.getElementById('agregarCarrito');
 const goCarrito = document.getElementById('goCarrito')
-const tituloProd = document.getElementById('titulo');
-const divProd = document.getElementById(`prod${tituloProd}`)
+
 
 
 goCarrito.addEventListener('click', async(e) =>{
@@ -12,11 +11,10 @@ goCarrito.addEventListener('click', async(e) =>{
     window.location.replace(`/carts/${user.payload.carrito}`)
 })
 
-const addCarrito = async (id, stock)=>{
+const addCarrito = async (param)=>{
     const response = await fetch('api/session/current');
     const json = await response.json();
-    if(stock !== 0) await fetch(`api/cart/${json.payload.carrito}/products/${id}`, {method:'POST'});
-    else divProd.innerHTML=`<span style="color:red;">No hay suficiente stock de este producto</span>`;
+    await fetch(`api/cart/${json.payload.carrito}/products/${param}`, {method:'POST'})
 }
 
 logout.addEventListener('click', e =>{

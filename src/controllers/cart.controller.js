@@ -2,6 +2,7 @@ import {CartManagerMongo} from '../dao/service/cartManagerMongo.js'
 import { userRegistered } from './session.controller.js';
 import { cartRepository, productRepository, ticketRepository } from '../repository/index.js';
 import { transporte, generateCode } from '../utils.js';
+import { userModel } from '../dao/models/user.model.js';
 
 const cm = new CartManagerMongo()
 
@@ -40,7 +41,9 @@ export const getCartId = async(req, res) =>{
 export const createCart = async (req, res)=>{
     try {
         let carritoNuevo = await cartRepository.createCart()
-        res.send({status: 'ok', payload: carritoNuevo})
+        const {email} = req.body;
+        await userModel.updateOne({email: email}, {$set:{carrito:carritoNuevo}})
+        res.send({status: 'succes', payload: carritoNuevo})
     } catch (error) {
         if (error) {
             console.log('error al crear el nuevo carrito ' + error);
@@ -62,36 +65,54 @@ export const updateCart = async(req,res)=>{
 
 export const addProductInCart = async (req, res) =>{
     try {
-        if (userRegistered.rol === "admin") {
-            console.log('No tienes permisos para realizar esta acción');
-        } else{
         let cid = req.params.cid;
-        let pid = req.params.pid
-        let carritoBuscado = await cartRepository.getById(cid)
-        let duplicado = carritoBuscado.products.find(prod => prod.product == pid)
-        
-        if (!carritoBuscado) {
-            req.logger.fatal('Error, el carrito que estas buscando no existe')
-            
-        } else if(duplicado){
+        let pid = req.params.pid;
+        let carritoUser = req.user.carrito;
+        let carritoBuscado;
+        let duplicado;
+        if(carritoUser === cid){
+            carritoBuscado = await cartRepository.getById(cid);
+        } 
+        if (!carritoBuscado) req.logger.fatal('Error, el carrito que estas buscando no existe');
+        else {
+            // if()
+            duplicado = carritoBuscado.products.find(prod => prod.product._id == pid)
+            if(duplicado){
             let cantidadProdDuplicado = duplicado.quantity
             cantidadProdDuplicado += 1
             let arrayNuevoProds = carritoBuscado.products.filter(prod => prod.product != pid)
             arrayNuevoProds.push({product: pid, quantity: cantidadProdDuplicado})
-
             await cartRepository.updateProductsId(cid, arrayNuevoProds)
-            // await cartModel.updateOne({_id: cid}, {$set: {products:arrayNuevoProds}})
-
-            res.send({status: 'cantidad sumada'})
-
-        } else if(!duplicado){
+            res.send({status: 'succes', message: 'cantidad sumada!'})
+            } else{
             let agregarProd = carritoBuscado.products;      
             agregarProd.push({product: pid, quantity: 1})
             await cartRepository.updateProductsId(cid, agregarProd)
-
-            res.send({status: 'succes'})
+            res.send({status: 'succes', message: 'producto agregado'})
+            }
         }
-    }
+
+        // console.log(cid);
+        // let carritoBuscado; 
+        
+//} else if(duplicado){
+        //     let cantidadProdDuplicado = duplicado.quantity
+        //     cantidadProdDuplicado += 1
+        //     let arrayNuevoProds = carritoBuscado.products.filter(prod => prod.product != pid)
+        //     arrayNuevoProds.push({product: pid, quantity: cantidadProdDuplicado})
+
+        //     await cartRepository.updateProductsId(cid, arrayNuevoProds)
+        //     // await cartModel.updateOne({_id: cid}, {$set: {products:arrayNuevoProds}})
+
+        //     res.send({status: 'cantidad sumada'})
+
+        // } else if(!duplicado){
+        //     let agregarProd = carritoBuscado.products;      
+        //     agregarProd.push({product: pid, quantity: 1})
+        //     await cartRepository.updateProductsId(cid, agregarProd)
+
+        //     res.send({status: 'succes'})
+        // }
     } catch (error) {
         if (error) {
             req.logger.error('error al hacer el post del producto en el carrito ' + error);
@@ -149,6 +170,7 @@ export const endPurchase = async (req, res)=>{
     try {
         let cid = req.params.cid;
         let cart = await cartRepository.getPopulate(cid)
+        console.log(cart);
         let prodValidos = [];
         let prodInvalidos = [];
         cart[0].products.forEach(async (prod) =>{

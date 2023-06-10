@@ -11,6 +11,7 @@ const productSchema = new mongoose.Schema({
     code: String,
     stock: Number,
     status: Boolean,
+    owner: String
 })
 
 productSchema.plugin(mongoosePaginate);

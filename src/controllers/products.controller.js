@@ -6,7 +6,6 @@ import ProductDTO from "../dao/DTOs/product.dto.js";
 import customError from "../errors/customError.js";
 import { generateProductError } from "../errors/infoError.js";
 import typeError from "../errors/typeError.js";
-import { userRegistered } from "./session.controller.js";
 
 const pm = new ProductManagerMongo()
 
@@ -118,6 +117,7 @@ export const getProductId = async (req, res)=>{
     }
 }
 
+
 export const createProduct = async (req, res)=>{
     try {
     let titulo = req.body.title
@@ -125,17 +125,14 @@ export const createProduct = async (req, res)=>{
     let precio = req.body.price
     let codigo = req.body.code
     let cantidad = req.body.stock
+    let owner;
+    if(req.user.rol === 'premium') owner = req.user.email
+    else owner = 'admin'
     let nombreImg;
-    
-    // let creador = userRegistered.email
-
     let ruta ;
-    
-
     if (!req.file) {
         req.logger.error('Error en la carga de la imagen') 
         res.status(400).send({status:"error",error:"La imagen no pudo ser guardada"})
-        return ruta = 'sin imagen'
     }
     if (!titulo || !descripcion || !precio || !codigo || !cantidad) {
         customError.createError({
@@ -148,7 +145,7 @@ export const createProduct = async (req, res)=>{
     } else{
         nombreImg = req.file.filename;
         ruta = `http://localhost:3005/images/${nombreImg}`;
-        let producto = new ProductDTO(titulo, descripcion, precio, ruta, codigo, cantidad)
+        let producto = new ProductDTO(titulo, descripcion, precio, ruta, codigo, cantidad, owner)
         let prod = await productRepository.createProduct(producto)
         res.send({status: 'succes', payload: prod})
         io.emit('prodNew',  prod)
@@ -178,7 +175,8 @@ export const updateProductById = async (req, res)=>{
 export const deleteProductById = async (req, res)=>{
     try {
         let idP = req.params.pid;
-        await productRepository.deleteProduct(idP)
+        // await premiumProd(idP);
+        await productRepository.deleteProduct(idP);
         res.send({status: 'succes'})
     } catch (error) {
         if (error) {

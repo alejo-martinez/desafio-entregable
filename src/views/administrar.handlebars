@@ -1,4 +1,18 @@
-<form action="/api/products/" enctype="multipart/form-data" method="POST">
+<nav class="nav">
+    <div class="nav-inicio">
+        <button class="btn-inicio"><a href="/products">INICIO</a></button>
+    </div>
+    <div class="nav-user">
+        <h4>Bienvenido {{userlogued.name}}!</h4>
+        <h4>Tipo de usuario: {{userlogued.rol}}</h4>
+        <button id="logout" class="btn-logout">Logout</button>
+    </div>
+</nav>
+<div class="cont-crear-prod">
+
+<h3 style="text-align: center; color: white; margin: 13px 0">Crear productos</h3>
+
+<form action="/api/products/" enctype="multipart/form-data" method="POST" class="form-create">
 <label>Titulo</label>
 <input type="text" name="title">
 <label>Descripcion</label>
@@ -11,5 +25,8 @@
 <input type="text" name="code">
 <label>Stock</label>
 <input type="number" name="stock">
-<input type="submit">
+<input style="margin-top: 25px;" type="submit" value="Crear">
 </form>
+</div>
+
+<script src="/js/administrar.js"></script>

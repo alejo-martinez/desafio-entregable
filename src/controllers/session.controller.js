@@ -49,17 +49,23 @@ export const userLogin = async(req, res)=>{
         if (!req.user) {
             res.status(400).send({status:'error', error:'contraseña inválida'})
         } else{
-            req.session.user = {
+            userRegistered = {
+                id: req.user._id,
                 name: req.user.name,
                 last_name: req.user.last_name,
                 email: req.user.email,
-                rol: 'usuario'
+                rol: req.user.rol
+            }
+            req.session.user = {
+                id: req.user._id,
+                name: req.user.name,
+                last_name: req.user.last_name,
+                email: req.user.email,
+                rol: req.user.rol
             }
             
             const acces_token = generateToken(req.user)
             res.cookie('accesToken', acces_token, {maxAge: 60*60*1000, signed: true, httpOnly: true}).send({status:'succes', message: '¡usuario logueado!'})
-            return userRegistered = req.user
-            
         }
     }
     } catch (error) {
@@ -76,14 +82,18 @@ export const logOut = async (req, res)=>{
     req.session.destroy(error =>{
         if(error) {
             req.logger.error('Error al cerrar la sesion')
-         res.send({status:'error', message: 'no pudimos cerrar la sesion'})
+            res.send({status:'error', message: 'no pudimos cerrar la sesion'})
         }
-        else res.clearCookie('accesToken').send({status: 'succes', message: 'sesion cerrada con exito'})
-    })
-    userRegistered = ""
-    
+        else{
+         res.clearCookie('accesToken').send({status: 'succes', message: 'sesion cerrada con exito'})
+         userRegistered = ""
+        }})
 }
 
+export const current = async(req, res)=>{
+    userRegistered = req.user
+    res.send({status:'succes', payload:req.user});
+}
 // export let obj={};
 
 // export const passReset = async (req, res) =>{
