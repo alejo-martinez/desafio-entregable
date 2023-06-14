@@ -6,25 +6,21 @@ import { authToken, strategyPassport } from "../utils.js";
 const router = Router()
 
 
-router.get('/github', passport.authenticate('github',{scope:['user:email']}, async(req,res)=>{
+router.get('/github', passport.authenticate('github',{scope:['user:email']}, async(req,res)=>{}))
 
-}))
+router.get('/', passport.authenticate('github', {failureRedirect:'http://localhost:3005/'}), getGithubUser)
 
-router.get('/', passport.authenticate('github', {failureRedirect:'/login'}), getGithubUser)
-
-router.post('/register',passport.authenticate('register',{failureRedirect:'/failregister', session: false}), createUser)
+router.post('/register',strategyPassport('register'), createUser) //passport.authenticate('register',{failureRedirect:'/failregister', session: false})
 
 router.get('/failregister', failRegister)
 
-router.post('/login',passport.authenticate('login',{session:false, failureMessage:true}), userLogin)
+router.post('/login',strategyPassport('login'), userLogin) //passport.authenticate('login',{session:false})
 //{failureRedirect:'/faillogin'}
-// router.post('/updatepass', updatePass)
 
 router.get('/faillogin', failLogin)
 
 router.delete('/login', logOut)
 
-// router.delete('/resetpass/:email', passReset)
 
 router.get('/current', passport.authenticate('jwt'), current)
 

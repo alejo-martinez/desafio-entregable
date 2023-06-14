@@ -4,7 +4,7 @@ import { productModel } from "../dao/models/product.model.js";
 import { productRepository } from "../repository/index.js";
 import ProductDTO from "../dao/DTOs/product.dto.js";
 import customError from "../errors/customError.js";
-import { generateProductError } from "../errors/infoError.js";
+import { generateInvalidIdError, generateInvalidSearchError, generateProductError, generateUpdateProductError } from "../errors/infoError.js";
 import typeError from "../errors/typeError.js";
 
 const pm = new ProductManagerMongo()
@@ -19,7 +19,6 @@ export const getProducts = async (req, res)=>{
         const productos = docs
         let prevLink;
         let nextLink;
-        
         if (limit !== 10) {
             if (hasNextPage === false)  nextLink = null
             else nextLink = `http://localhost:3005/api/products?limit=${limit}&page=${nextPage}`
@@ -91,34 +90,41 @@ export const getProducts = async (req, res)=>{
                 prevLink: prevLink,
                 nextLink: nextLink
             })
-
-        }
-        
+        }     
     } catch (error) {
         if (error) {
             req.logger.error('error al leer los productos' + error);
+            // next(error)
         }
     }
 }
 
-export const getProductId = async (req, res)=>{
+export const getProductId = async (req, res, next)=>{
     try {
-        let idProd = req.params.pid
-        let producto = await pm.getProductById(idProd)
+    let idProd = req.params.pid
+    if(idProd.length !== 24) {
+        customError.createError({name:'Error en la búsqueda del producto', cause: generateInvalidIdError(idProd), message: 'Id inválido', code: typeError.INVALID_TYPES_ERROR})
+    } else{
+        let producto = await pm.getProductById(idProd);
         if (!producto) {
-            res.send('El id que estas buscando no corresponde con ningún producto existente')
-        } else{
-            res.send(producto)
+            customError.createError({
+                    name:'Error en la busqueda del producto',
+                    cause: generateInvalidSearchError('producto', idProd),
+                    message: 'Falló la búsqueda del producto',
+                    code: typeError.INVALID_TYPES_ERROR
+                })
+            } else{
+                res.send(producto)
+            }
         }
     } catch (error) {
-        if (error) {
-            req.logger.error('error al buscar el archivo especificado' + error);
-        }
+            next(error);
+            req.logger.error('error al buscar el producto especificado' + error);
     }
 }
 
 
-export const createProduct = async (req, res)=>{
+export const createProduct = async (req, res, next)=>{
     try {
     let titulo = req.body.title
     let descripcion = req.body.description
@@ -128,46 +134,44 @@ export const createProduct = async (req, res)=>{
     let owner;
     if(req.user.rol === 'premium') owner = req.user.email
     else owner = 'admin'
-    let nombreImg;
-    let ruta ;
-    if (!req.file) {
-        req.logger.error('Error en la carga de la imagen') 
-        res.status(400).send({status:"error",error:"La imagen no pudo ser guardada"})
-    }
-    if (!titulo || !descripcion || !precio || !codigo || !cantidad) {
+    let ruta = req.file? `http://localhost:3005/images/${req.file.filename}`: '';
+    console.log(ruta);
+    if (!titulo || !descripcion || !precio || !codigo || !cantidad || !req.file) {
         customError.createError({
             name: 'Error en la creación del producto',
-            cause: generateProductError({titulo, descripcion, precio, codigo, cantidad}),
+            cause: generateProductError({titulo, descripcion, precio, codigo, cantidad, ruta}),
             message: 'Fallo en la creación del producto',
             code: typeError.INVALID_TYPES_ERROR
         })
-        // res.send('Error, debes completar todos los campos')
     } else{
-        nombreImg = req.file.filename;
-        ruta = `http://localhost:3005/images/${nombreImg}`;
         let producto = new ProductDTO(titulo, descripcion, precio, ruta, codigo, cantidad, owner)
         let prod = await productRepository.createProduct(producto)
-        res.send({status: 'succes', payload: prod})
         io.emit('prodNew',  prod)
+        res.send({status: 'succes', payload: producto});
     } 
-    }
-    catch (error) {
-        if (error) {
-            req.logger.error('error al crear el producto ' + error + ' ' + error.cause);
-        }
+} catch (error) {
+    req.logger.error(error);
+    next(error)
     } 
 }
 
-export const updateProductById = async (req, res)=>{
+export const updateProductById = async (req, res, next)=>{
     try {
         let idProducto = req.params.pid
         let propiedad = req.body.campo
         let value = req.body.valor
-        await productRepository.updateProduct(idProducto, propiedad, value)
-        res.send({status: 'succes'})
+        if(idProducto.length !== 24) {
+            customError.createError({name:'Fallo en la actualización del producto', cause: generateInvalidIdError(idProducto), message: 'Id inválido', code: typeError.INVALID_TYPES_ERROR})
+        }
+        if(!propiedad || !value) customError.createError({name:'Fallo en la actualización del producto', cause: generateUpdateProductError(propiedad, value), message:'Faltan valores', code:typeError.INVALID_TYPES_ERROR});
+        else {
+            await productRepository.updateProduct(idProducto, propiedad, value)
+            res.send({status: 'succes'})
+        }
     } catch (error) {
         if (error) {
             req.logger.error('error al actualizar el producto' + error);
+            next(error)
         }
     }
 }
@@ -175,9 +179,8 @@ export const updateProductById = async (req, res)=>{
 export const deleteProductById = async (req, res)=>{
     try {
         let idP = req.params.pid;
-        // await premiumProd(idP);
         await productRepository.deleteProduct(idP);
-        res.send({status: 'succes'})
+        res.send({status: 'succes'})  
     } catch (error) {
         if (error) {
             req.logger.error('error al borrar el producto' + error);

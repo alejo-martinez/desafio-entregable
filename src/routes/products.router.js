@@ -5,7 +5,6 @@ import passport from "passport";
 
 const router = Router();
 
-
 router.get('/', getProducts)
 
 router.get('/:pid', getProductId)

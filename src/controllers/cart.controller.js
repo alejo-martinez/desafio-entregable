@@ -67,52 +67,29 @@ export const addProductInCart = async (req, res) =>{
     try {
         let cid = req.params.cid;
         let pid = req.params.pid;
-        let carritoUser = req.user.carrito;
-        let carritoBuscado;
+        let carritoBuscado = await cartRepository.getById(cid);
         let duplicado;
-        if(carritoUser === cid){
-            carritoBuscado = await cartRepository.getById(cid);
-        } 
+        let producto = await productRepository.getById(pid)
         if (!carritoBuscado) req.logger.fatal('Error, el carrito que estas buscando no existe');
         else {
-            // if()
-            duplicado = carritoBuscado.products.find(prod => prod.product._id == pid)
-            if(duplicado){
-            let cantidadProdDuplicado = duplicado.quantity
-            cantidadProdDuplicado += 1
-            let arrayNuevoProds = carritoBuscado.products.filter(prod => prod.product != pid)
-            arrayNuevoProds.push({product: pid, quantity: cantidadProdDuplicado})
-            await cartRepository.updateProductsId(cid, arrayNuevoProds)
-            res.send({status: 'succes', message: 'cantidad sumada!'})
-            } else{
-            let agregarProd = carritoBuscado.products;      
-            agregarProd.push({product: pid, quantity: 1})
-            await cartRepository.updateProductsId(cid, agregarProd)
-            res.send({status: 'succes', message: 'producto agregado'})
+            if(producto.stock === 0) res.send({status: 'error', payload: 'No hay stock'})
+            else{
+                duplicado = carritoBuscado.products.find(prod => prod.product == pid)
+                if(duplicado){
+                    let cantidadProdDuplicado = duplicado.quantity
+                    cantidadProdDuplicado += 1
+                    let arrayNuevoProds = carritoBuscado.products.filter(prod => prod.product != pid)
+                    arrayNuevoProds.push({product: pid, quantity: cantidadProdDuplicado})
+                    await cartRepository.updateProductsId(cid, arrayNuevoProds)
+                    res.send({status: 'succes', message: 'cantidad sumada!'})
+                } else{
+                    let agregarProd = carritoBuscado.products;      
+                    agregarProd.push({product: pid, quantity: 1})
+                    await cartRepository.updateProductsId(cid, agregarProd)
+                    res.send({status: 'succes', message: 'producto agregado'})
+                }
             }
         }
-
-        // console.log(cid);
-        // let carritoBuscado; 
-        
-//} else if(duplicado){
-        //     let cantidadProdDuplicado = duplicado.quantity
-        //     cantidadProdDuplicado += 1
-        //     let arrayNuevoProds = carritoBuscado.products.filter(prod => prod.product != pid)
-        //     arrayNuevoProds.push({product: pid, quantity: cantidadProdDuplicado})
-
-        //     await cartRepository.updateProductsId(cid, arrayNuevoProds)
-        //     // await cartModel.updateOne({_id: cid}, {$set: {products:arrayNuevoProds}})
-
-        //     res.send({status: 'cantidad sumada'})
-
-        // } else if(!duplicado){
-        //     let agregarProd = carritoBuscado.products;      
-        //     agregarProd.push({product: pid, quantity: 1})
-        //     await cartRepository.updateProductsId(cid, agregarProd)
-
-        //     res.send({status: 'succes'})
-        // }
     } catch (error) {
         if (error) {
             req.logger.error('error al hacer el post del producto en el carrito ' + error);
@@ -170,20 +147,19 @@ export const endPurchase = async (req, res)=>{
     try {
         let cid = req.params.cid;
         let cart = await cartRepository.getPopulate(cid)
-        console.log(cart);
         let prodValidos = [];
         let prodInvalidos = [];
         cart[0].products.forEach(async (prod) =>{
-            if (prod.product.stock > prod.quantity) {
+            if (prod.product.stock >= prod.quantity) {
                 prodValidos.push(prod)
                 let stockAct = prod.product.stock - prod.quantity;
                 await productRepository.updateProduct(prod.product._id, 'stock' ,stockAct)
-                
             } else {
                 prodInvalidos.push(prod)
-                await cartRepository.updateProductsId(cid, prodInvalidos)
+                return prodInvalidos;
             }
         })
+        await cartRepository.updateProductsId(cid, prodInvalidos)
         if (prodValidos.length !== 0) {
             const fechaActual = `día ${arrayFechas[date.getDay()]} ${date.getDate()} de ${arrayMeses[date.getMonth()]} de ${date.getFullYear()} a las ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
             let monto = 0;
@@ -200,7 +176,6 @@ export const endPurchase = async (req, res)=>{
                 <span>Su compra por $${ticket.amount}, se efectuo el ${ticket.purchase_datetime}. Su código es ${ticket.code}</span>
                 </div>`
             })
-     
             prodValidos = []
             res.send({status:'succes'})
         }

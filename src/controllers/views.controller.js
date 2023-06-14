@@ -40,10 +40,6 @@ export const renderProducts = async(req, res)=>{
     const query = req.query.query;
     const {docs} = await productModel.paginate({}, {limit: limit, page, lean: true});
     const productos = docs;
-    // let carrito = await cm.getCart();
-    // let idCart = carrito[0]._id;
-    // let carritoBuscado = await cm.getCartById(idCart);
-    // let prodEnCart = carritoBuscado.products;
     if (limit !== 10) {
         let prods = productos.slice(0, limit)
         res.render('productos',{prods, userRegistered, admin, premium, standard, sinUser})

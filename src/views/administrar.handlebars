@@ -11,8 +11,8 @@
 <div class="cont-crear-prod">
 
 <h3 style="text-align: center; color: white; margin: 13px 0">Crear productos</h3>
-
-<form action="/api/products/" enctype="multipart/form-data" method="POST" class="form-create">
+{{!-- action="/api/products/" enctype="multipart/form-data" method="POST"  --}}
+<form id="formcreate" class="form-create">
 <label>Titulo</label>
 <input type="text" name="title">
 <label>Descripcion</label>
@@ -28,5 +28,6 @@
 <input style="margin-top: 25px;" type="submit" value="Crear">
 </form>
 </div>
+<div id="faildiv" style="width: 50%; text-align:center; margin:auto; margin-top:3rem"></div>
 
 <script src="/js/administrar.js"></script>

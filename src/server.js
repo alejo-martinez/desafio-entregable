@@ -75,7 +75,6 @@ app.use('/api/cart/', cartRouter)
 app.use('/api/products/', productsRouter)
 app.use('/api/session/', sessionRouter)
 app.use('/api/users/', userRouter)
-app.use(errors)
 
 app.engine('handlebars', handlebars.engine());
 
@@ -83,9 +82,6 @@ app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
 
-
-let mensajes = [];
-let usuariosActualizados = [];
 io.on('connection', async (socket)=>{
     console.log('cliente conectado');
 })
@@ -94,3 +90,4 @@ mongoose.connect('mongodb+srv://AlejoM:cluster0selacome@ecommerce.wuolt09.mongod
     useNewUrlParser:true,
     useUnifiedTopology:true,
 })
+app.use(errors)

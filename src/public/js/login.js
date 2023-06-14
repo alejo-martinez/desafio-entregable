@@ -16,7 +16,7 @@ formLogin.addEventListener('submit', e=>{
         },
     }).then(result => result.json())
     .then(json=>{
-        if(json.status === 'succes') window.location.replace('http://localhost:3005/products')
-        else console.log(json);
+        if(json.status === 'succes') window.location.replace('/products')
+        else document.getElementById('faildiv').innerHTML=`<span style='color:#B22222;'>${json.error}</span>`
     });
 })

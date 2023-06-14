@@ -5,7 +5,7 @@ import passport from "passport";
 
 const router = Router()
  
-router.post('/',createCart) //admin no puede crearse un carrito
+router.post('/',createCart)
 
 router.get('/', getCarts)
 

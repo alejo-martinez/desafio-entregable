@@ -12,6 +12,8 @@ formRegistro.addEventListener('submit', async (e) =>{
          await fetch('api/cart/', {method:'POST', body:JSON.stringify({email: objeto.email}), headers: {'Content-Type': 'application/json'}});
          window.location.replace('/')
         // const jsonCart = await responseCart.json();const responseCart =   
+    } else{
+        document.getElementById('faildiv').innerHTML=`<span style='color:#B22222;'>${jsonRegister.error}</span>`
     }
 
     // fetch('api/cart/', {

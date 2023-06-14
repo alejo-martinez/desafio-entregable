@@ -8,11 +8,11 @@ export let userRegistered;
 const date = new Date()
 
 export const getGithubUser = async(req, res)=>{
+    console.log(req.user);
     req.session.user = req.user
-    req.session.user.rol = 'usuario'
     const acces_token = generateToken(req.session.user)
-    res.cookie('accesToken', acces_token, {maxAge:60*60*1000, signed:true, httpOnly: true}).redirect('/products')
-    return userRegistered = req.user
+    res.cookie('accesToken', acces_token, {maxAge:7200000, signed:true, httpOnly: true}).redirect('/products')
+    // return userRegistered = req.user
 }
 
 export const createUser = async(req, res)=>{
@@ -47,7 +47,7 @@ export const userLogin = async(req, res)=>{
     }
     else{
         if (!req.user) {
-            res.status(400).send({status:'error', error:'contraseña inválida'})
+            res.status(400).send({status:'error', error:'error nqv'})
         } else{
             userRegistered = {
                 id: req.user._id,

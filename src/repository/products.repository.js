@@ -7,14 +7,14 @@ export default class ProductRepository {
     }
 
     async getById(id) {
-        return  await productModel.findOne({_id: id});
+        return await productModel.findOne({_id: id}).lean();
     }
 
     async createProduct(params) {
         let title = params.title;
         let description = params.description;
         let price = params.price;
-        let thumbnail = params.img;
+        let thumbnail = params.thumbnail;
         let code = params.code;
         let stock = params.stock;
         let owner = params.owner

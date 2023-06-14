@@ -20,11 +20,13 @@ const PRIVATE_KEY = 'KeyParaJWT'
 export const strategyPassport = (strategy)=>{
     return async(req, res, next) =>{
         passport.authenticate(strategy,function(err, user, info){
-            if(err) return next(err);
+            if(err) next(err);
             if(!user) {
                 return res.status(401).send({error: info.message?info.message:info.toString()})
             }
-        })
+            req.user = user
+            next()
+        })(req, res, next)
     }
 }
 
@@ -140,7 +142,7 @@ export const __dirname = dirname(__filename);
 
 export const premiumProd = async(id) =>{
     let prod = await productRepository.getById(id)
-    if(prod.owner !== 'admin'){
+    if(prod.owner !== 'admin' && prod.owner !== undefined){
         let user = await userModel.findOne({email: prod.owner})
         await transporte.sendMail({
             from:'alejoomartinex11@gmail.com',
