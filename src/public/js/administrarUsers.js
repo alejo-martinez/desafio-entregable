@@ -31,7 +31,6 @@ for(let el of btnActualizar){
         e.preventDefault();
         let idu = el.dataset.id;
         let valorInput = document.getElementById(`id${idu}`)
-        console.log(valorInput.value);
         let enviar = {id: idu, valor: valorInput.value}
         fetch('/api/users/', {
             method: 'PUT',
@@ -42,6 +41,8 @@ for(let el of btnActualizar){
         }).then(result => result.json()).then(data =>{
             if(data.status === 'succes'){
                 location.reload();
+            } else{
+                document.getElementById(`div${idu}`).innerHTML=`<span style="color:red; max-width: 20px;">${data.error}</span>`
             }
         })
     })

@@ -93,6 +93,7 @@ export const passwordReset = async (req, res) =>{
 
 export const admUsers = async(req, res) =>{
     let users = await userModel.find().lean();
-    res.render('administrarUsers', {users})
+    let userRegistered = req.user;
+    res.render('administrarUsers', {users, userRegistered})
     
 }

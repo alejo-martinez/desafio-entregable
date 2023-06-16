@@ -1,3 +1,12 @@
+<nav class="nav">
+    <div class="nav-user">
+        <h4>Bienvenido {{userRegistered.name}}!</h4>
+        <h4>Tipo de usuario: {{userRegistered.rol}}</h4>
+        <button id="logout" class="btn-logout">Logout</button>
+        <button><a href="/administrar">Crear productos</a></button>
+    </div>
+</nav>
+
 <div class="containerProd" id="container">
 {{#each users}} 
 <div class="product-card cardProd">
@@ -19,6 +28,7 @@
   <br>
   <button class="btn-borrar" data-id={{this._id}}><span>Borrar</span></button>
 
+<div id="div{{this._id}}"></div>
 </div> 
 {{/each}}
 </div>

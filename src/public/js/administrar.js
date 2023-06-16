@@ -18,7 +18,7 @@ formCreate.addEventListener('submit', async(e)=>{
             timer: 1500
           })
     }
-    else document.getElementById('faildiv').innerHTML=`<span style=color:red;>${JSON.stringify(json)}</span>`
+    else document.getElementById('faildiv').innerHTML=`<span style=color:red;>${JSON.stringify(json.error)}</span>`
 })
 
 logout.addEventListener('click', e =>{

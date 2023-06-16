@@ -81,9 +81,11 @@ app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
-
+let user ;
 io.on('connection', async (socket)=>{
     console.log('cliente conectado');
+    socket.on('usuario', data => user = data)
+    socket.emit('usersact', user)
 })
 
 mongoose.connect('mongodb+srv://AlejoM:cluster0selacome@ecommerce.wuolt09.mongodb.net/?retryWrites=true&w=majority', {

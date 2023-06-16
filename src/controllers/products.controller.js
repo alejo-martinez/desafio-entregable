@@ -160,9 +160,6 @@ export const updateProductById = async (req, res, next)=>{
         let idProducto = req.params.pid
         let propiedad = req.body.campo
         let value = req.body.valor
-        if(idProducto.length !== 24) {
-            customError.createError({name:'Fallo en la actualización del producto', cause: generateInvalidIdError(idProducto), message: 'Id inválido', code: typeError.INVALID_TYPES_ERROR})
-        }
         if(!propiedad || !value) customError.createError({name:'Fallo en la actualización del producto', cause: generateUpdateProductError(propiedad, value), message:'Faltan valores', code:typeError.INVALID_TYPES_ERROR});
         else {
             await productRepository.updateProduct(idProducto, propiedad, value)

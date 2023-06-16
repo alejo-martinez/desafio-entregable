@@ -11,29 +11,28 @@ const date = new Date()
 const arrayFechas = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado']
 const arrayMeses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
 
-export const getCarts = async (req, res)=>{
+export const getCarts = async (req, res, next)=>{
     try {
         let carritos = await cartRepository.get()
         res.send(carritos)
     } catch (error) {
         if (error) {
+            next(error);
             req.logger.error('error al mostrar los carritos ' + error);
         }
     }
 }
 
-export const getCartId = async(req, res) =>{
+export const getCartId = async(req, res, next) =>{
     try {
         let cid = req.params.cid;
         let carritoBuscado = await cartRepository.getById(cid)
-        if (!carritoBuscado) {
-            res.send('El carrito que estas buscando no existe')
-        } else{
-            res.send(carritoBuscado)
-        }
+        res.send(carritoBuscado)
     } catch (error) {
         if (error) {
-            req.logger.error('error al buscar el carrito solicitado ' + error);
+            next(error)
+            // req.logger.error('error al buscar el carrito solicitado ' + error);
+            // res.status(500).send({status:'error', error:'Error al traer el producto ' + error})
         }
     }
 }
@@ -57,7 +56,7 @@ export const updateCart = async(req,res)=>{
         let arrayActualizado = req.body
         await cartRepository.updateProductsId(cid, arrayActualizado)
 
-        res.send({status: 'array update!'})
+        res.send({status: 'succes'})
         } catch (error) {
             if(error) req.logger.error('error al actualizar el array de productos ' + error);       
         }

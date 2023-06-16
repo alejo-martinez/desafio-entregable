@@ -33,7 +33,7 @@ router.get('/loggerTest', (req, res)=>{
     res.send({status: 'succes', message: 'probando logger'})
 })
 
-router.get('/admusers', isAdmin, admUsers);
+router.get('/admusers', passport.authenticate('jwt'),isAdmin, admUsers);
 
 // router.get('/resetpassword', enviarMail)
 

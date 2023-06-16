@@ -1,7 +1,9 @@
 import { userModel } from "../dao/models/user.model.js";
-import { actualDate, contarDias, diasTotales } from "../dao/service/getDate.js";
+import {contarDias, diasTotales } from "../dao/service/getDate.js";
+import customError from "../errors/customError.js";
+import typeError from "../errors/typeError.js";
 import { transporte } from "../utils.js";
-import { io } from "../server.js";
+
 const get = async(req, res)=>{
     try {
         let users = await userModel.find().lean();
@@ -9,25 +11,26 @@ const get = async(req, res)=>{
         users.forEach(user => {
             userSimp.push({name: user.name, email: user.email, rol: user.rol});
         })
-        
         return res.send({status: 'succes', payload: userSimp});
     } catch (error) {
-        if(error) console.log('Error al traer los usuarios ' + error)
+        if(error) res.status(500).send({status:'error', error: 'Error al obtener los usuarios: ' + error})
     }
 }
 
-const updateRol = async(req, res) =>{
+const updateRol = async(req, res, next) =>{
     try {
         const {id, valor} = req.body;
-        if(!valor) res.send({status:'error', error: 'Debes completar el campo'})
+        if(!valor) customError.createError({name:'Error al actualizar el rol', cause:`Debes ingresar un rol, se obtuvo: ${valor}`, message:'Fallo en la actualizacion del rol', code:typeError.INVALID_TYPES_ERROR})
         else{
-            // let users = await userModel.find().lean();
-            // io.emit('usuarios', users)
-            await userModel.updateOne({_id: id}, {$set: {rol: valor}})
-            res.send({status:'succes'})
+            if(valor !== 'admin' && valor !== 'user' && valor !== 'premium') customError.createError({name:'Error al actualizar el rol', cause:`el valor "${valor}" no es válido. Debes ingresar:  "admin", "user" o "premium".`, message: 'Fallo en la actualizacion del rol',code:typeError.INVALID_TYPES_ERROR})
+            else{
+                await userModel.updateOne({_id: id}, {$set: {rol: valor}})
+                res.send({status:'succes', message: 'usuario actualizado'})
+            }
         }
     } catch (error) {
-        if(error) console.log('Error al actualizar el rol ' + error);
+        // if(error) res.status(500).send({status:'error', error: 'Error al actualizar el rol: ' + error})
+        next(error)
     }
 }
 
@@ -37,7 +40,7 @@ const deleteUser = async(req, res)=>{
         await userModel.deleteOne({_id: uid})
         res.send({status:'succes'});
     } catch (error) {
-        if(error) console.log('Error al borrar el user '+ error);
+        if(error) res.status(500).send({status:'error', error:'Error al borrar el usuario: ' + error})
     }
 }
 
@@ -62,7 +65,7 @@ const deleteUserInactive = async(req, res)=>{
     })  
         return res.send({status: 'succes', payload: 'Usuarios inactivos eliminados'});
     } catch (error) {
-        if(error) console.log('No se pudieron borrar los users inactivos ' + error);
+        if(error) res.status(500).send({status:'error', error:'Error al borrar los usuarios inactivos: ' + error})
     }
 }
 

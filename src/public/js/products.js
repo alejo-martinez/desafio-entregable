@@ -8,7 +8,6 @@ const addCarrito = async (id)=>{
     const json = await response.json();
     const responseAdd = await fetch(`api/cart/${json.payload.carrito}/products/${id}`, {method:'POST'});
     const jsonAdd = await responseAdd.json();
-    console.log(jsonAdd);
     if(jsonAdd.status === 'error') document.getElementById(`div${id}`).innerHTML=`<span style="color:red;">${jsonAdd.payload}</span>`;
 }
 
