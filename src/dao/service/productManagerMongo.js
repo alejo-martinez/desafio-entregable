@@ -1,4 +1,3 @@
-import { productModel } from "../models/product.model.js";
 import { __dirname } from "../../utils.js";
 import { productRepository } from "../../repository/index.js";
 export class ProductManagerMongo {

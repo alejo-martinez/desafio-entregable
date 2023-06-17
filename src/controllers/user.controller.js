@@ -29,7 +29,6 @@ const updateRol = async(req, res, next) =>{
             }
         }
     } catch (error) {
-        // if(error) res.status(500).send({status:'error', error: 'Error al actualizar el rol: ' + error})
         next(error)
     }
 }

@@ -1,7 +1,5 @@
 import config from "../config/config.js";
-import { userModel } from "../dao/models/user.model.js";
-import { isValidPassword } from "../utils.js";
-import { createHash, generateToken, transporte } from "../utils.js";
+import { generateToken } from "../utils.js";
 
 
 export let userRegistered;
@@ -12,7 +10,6 @@ export const getGithubUser = async(req, res)=>{
     req.session.user = req.user
     const acces_token = generateToken(req.session.user)
     res.cookie('accesToken', acces_token, {maxAge:7200000, signed:true, httpOnly: true}).redirect('/products')
-    // return userRegistered = req.user
 }
 
 export const createUser = async(req, res)=>{

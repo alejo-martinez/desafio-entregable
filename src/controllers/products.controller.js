@@ -94,7 +94,6 @@ export const getProducts = async (req, res)=>{
     } catch (error) {
         if (error) {
             req.logger.error('error al leer los productos' + error);
-            // next(error)
         }
     }
 }
