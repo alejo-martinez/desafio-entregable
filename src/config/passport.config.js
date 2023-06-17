@@ -86,7 +86,7 @@ const initPassport = ()=>{
     passport.use('github', new githubService({
         clientID: "Iv1.07ddc11b0a0fb2c6",
         clientSecret: "6191a91e47a2abb4d81bfcb376e98ec02256b616",
-        callbackURL: "/api/session",
+        callbackURL: "https://desafio-entregable-production.up.railway.app/api/session",
     }, async(accesToken, refreshToken, profile, done)=>{
         try {
             let user = await userModel.findOne({email: profile._json.email}).lean()
