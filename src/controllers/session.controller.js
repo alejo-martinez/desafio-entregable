@@ -22,26 +22,27 @@ export const failRegister = async(req, res)=>{
 
 export const userLogin = async(req, res)=>{
     try {
-    const {email, password} = req.body;
-     if (email === config.adminEmail && password === config.adminPass) {
-        let idSesion = req.sessionID
-        userRegistered = {
-            name: 'adminCoder',
-            last_name: "",
-            email: config.adminEmail || 'adminCoder@coder.com',
-            password: config.adminPass,
-            rol: 'admin'
-        }
-        req.session.user = {
-            id: idSesion,
-            email: config.adminEmail,
-            rol: 'admin'
-        }
-        const acces_token = generateToken(userRegistered)
-        res.cookie('accesToken', acces_token, {maxAge: 60*60*1000, signed: true, httpOnly: true}).send({status:'succes', payload: acces_token})
-        return userRegistered
-    }
-    else{
+    //     console.log(req.user);
+    // const {email, password} = req.body;
+    //  if (email === config.adminEmail && password === config.adminPass) {
+    //     let idSesion = req.sessionID
+    //     userRegistered = {
+    //         name: 'adminCoder',
+    //         last_name: "",
+    //         email: config.adminEmail || 'adminCoder@coder.com',
+    //         password: config.adminPass,
+    //         rol: 'admin'
+    //     }
+    //     req.session.user = {
+    //         id: idSesion,
+    //         email: config.adminEmail,
+    //         rol: 'admin'
+    //     }
+    //     const acces_token = generateToken(userRegistered)
+    //     res.cookie('accesToken', acces_token, {maxAge: 60*60*1000, signed: true, httpOnly: true}).send({status:'succes', payload: acces_token})
+    //     return userRegistered
+    // }
+    // else{
         if (!req.user) {
             res.status(400).send({status:'error', error:'error nqv'})
         } else{
@@ -63,7 +64,7 @@ export const userLogin = async(req, res)=>{
             const acces_token = generateToken(req.user)
             res.cookie('accesToken', acces_token, {maxAge: 60*60*1000, signed: true, httpOnly: true}).send({status:'succes', message: '¡usuario logueado!'})
         }
-    }
+    
     } catch (error) {
         if(error) req.logger.error('error al intentar iniciar sesion ' + error);
     }
