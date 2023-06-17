@@ -63,17 +63,7 @@ const initPassport = ()=>{
                 {passReqToCallback:true, usernameField:'email'}, async(req, username, passport, done) =>{
                     try {
                         const password = req.body.password
-                        if(username === 'adminCoder@coder.com' && password === 'adminCod3r123'){
-                            let registrado = await userModel.findOne({email: username}).lean();
-                            if(registrado){
-                                await userModel.updateOne({email: username}, {$set: {last_login: actualDate}});
-                                return done(null, registrado)
-                            } else{
-                                const user = await userModel.create({name:'adminCoder', last_name:'',email:username, password:password, rol:'admin'})
-                                await userModel.updateOne({email: username}, {$set: {last_login: actualDate}});
-                                return done(null, user)
-                            }
-                        }
+
                         const user = await userModel.findOne({email: username}).lean()
                         if(!user){
                             return done(null, false, {message: 'El usuario no existe'})
@@ -96,7 +86,7 @@ const initPassport = ()=>{
     passport.use('github', new githubService({
         clientID: "Iv1.07ddc11b0a0fb2c6",
         clientSecret: "6191a91e47a2abb4d81bfcb376e98ec02256b616",
-        callbackURL: "http://localhost:3005/api/session",
+        callbackURL: "/api/session",
     }, async(accesToken, refreshToken, profile, done)=>{
         try {
             let user = await userModel.findOne({email: profile._json.email}).lean()

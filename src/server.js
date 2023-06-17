@@ -65,7 +65,7 @@ app.use(cookieParser('CoderS3cR3tC0D3'))
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use(cors({origin:'http://localhost:3005',methods:['GET','POST','PUT']}))
+app.use(cors({origin:'/',methods:['GET','POST','PUT']}))
 app.use('/static', express.static(__dirname +'/public'))
 app.use(express.static(path.join(__dirname, 'views')))
 app.use(express.static(__dirname+'/public'))

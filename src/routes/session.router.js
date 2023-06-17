@@ -8,14 +8,13 @@ const router = Router()
 
 router.get('/github', passport.authenticate('github',{scope:['user:email']}, async(req,res)=>{}))
 
-router.get('/', passport.authenticate('github', {failureRedirect:'http://localhost:3005/'}), getGithubUser)
+router.get('/', passport.authenticate('github', {failureRedirect:'/'}), getGithubUser)
 
-router.post('/register',strategyPassport('register'), createUser) //passport.authenticate('register',{failureRedirect:'/failregister', session: false})
+router.post('/register',strategyPassport('register'), createUser)
 
 router.get('/failregister', failRegister)
 
-router.post('/login',strategyPassport('login'), userLogin) //passport.authenticate('login',{session:false})
-//{failureRedirect:'/faillogin'}
+router.post('/login',strategyPassport('login'), userLogin)
 
 router.get('/faillogin', failLogin)
 

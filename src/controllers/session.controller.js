@@ -6,7 +6,6 @@ export let userRegistered;
 const date = new Date()
 
 export const getGithubUser = async(req, res)=>{
-    console.log(req.user);
     req.session.user = req.user
     const acces_token = generateToken(req.session.user)
     res.cookie('accesToken', acces_token, {maxAge:7200000, signed:true, httpOnly: true}).redirect('/products')
