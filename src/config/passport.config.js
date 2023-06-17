@@ -63,10 +63,6 @@ const initPassport = ()=>{
                 {passReqToCallback:true, usernameField:'email'}, async(req, username, passport, done) =>{
                     try {
                         const password = req.body.password
-                        if(username === 'adminCoder@coder.com' && password === 'adminCod3r123'){
-                            let registrado = await userModel.findOne({email: username}).lean();
-                            return done(null, registrado)
-                        } else{
                             const user = await userModel.findOne({email: username}).lean()
                             if(!user){
                                 return done(null, false, {message: 'El usuario no existe'})
@@ -79,7 +75,6 @@ const initPassport = ()=>{
                                 await userModel.updateOne({email: username}, {$set: {last_login: actualDate}})
                                 return done(null, user) 
                             }
-                        }
                     } catch (error) {
                         return done('error al obtener el usuario ' + error)
                     }

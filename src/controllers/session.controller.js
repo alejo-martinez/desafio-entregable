@@ -28,7 +28,7 @@ export const userLogin = async(req, res)=>{
         userRegistered = {
             name: 'adminCoder',
             last_name: "",
-            email: config.adminEmail,
+            email: config.adminEmail || 'adminCoder@coder.com',
             password: config.adminPass,
             rol: 'admin'
         }
